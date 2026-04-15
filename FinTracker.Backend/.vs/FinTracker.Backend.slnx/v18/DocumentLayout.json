@@ -3,8 +3,12 @@
   "WorkspaceRootPath": "D:\\Coding\\FinTracker.Backend\\FinTracker.Backend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6AC59FCD-6CAA-4414-B73B-B781884A3F38}|FinTracker.Parser\\FinTracker.Parser.csproj|d:\\coding\\fintracker.backend\\fintracker.backend\\fintracker.parser\\csvparser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6AC59FCD-6CAA-4414-B73B-B781884A3F38}|FinTracker.Parser\\FinTracker.Parser.csproj|solutionrelative:fintracker.parser\\csvparser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D324DB22-AF61-B20C-92A4-C1321D037878}|FinTracker.API\\FinTracker.API.csproj|d:\\coding\\fintracker.backend\\fintracker.backend\\fintracker.api\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D324DB22-AF61-B20C-92A4-C1321D037878}|FinTracker.API\\FinTracker.API.csproj|solutionrelative:fintracker.api\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D324DB22-AF61-B20C-92A4-C1321D037878}|FinTracker.API\\FinTracker.API.csproj|d:\\coding\\fintracker.backend\\fintracker.backend\\fintracker.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D324DB22-AF61-B20C-92A4-C1321D037878}|FinTracker.API\\FinTracker.API.csproj|solutionrelative:fintracker.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -27,19 +31,28 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CsvParser.cs",
-              "DocumentMoniker": "D:\\Coding\\FinTracker.Backend\\FinTracker.Backend\\FinTracker.Parser\\CsvParser.cs",
-              "RelativeDocumentMoniker": "FinTracker.Parser\\CsvParser.cs",
-              "ToolTip": "D:\\Coding\\FinTracker.Backend\\FinTracker.Backend\\FinTracker.Parser\\CsvParser.cs",
-              "RelativeToolTip": "FinTracker.Parser\\CsvParser.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAYAAAAAAAAAA==",
+              "Title": "TransactionController.cs",
+              "DocumentMoniker": "D:\\Coding\\FinTracker.Backend\\FinTracker.Backend\\FinTracker.API\\Controllers\\TransactionController.cs",
+              "RelativeDocumentMoniker": "FinTracker.API\\Controllers\\TransactionController.cs",
+              "ToolTip": "D:\\Coding\\FinTracker.Backend\\FinTracker.Backend\\FinTracker.API\\Controllers\\TransactionController.cs*",
+              "RelativeToolTip": "FinTracker.API\\Controllers\\TransactionController.cs*",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABUAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-04T07:12:16.421Z",
+              "WhenOpened": "2026-04-15T16:38:46.834Z",
               "EditorCaption": ""
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Coding\\FinTracker.Backend\\FinTracker.Backend\\FinTracker.API\\Program.cs",
+              "RelativeDocumentMoniker": "FinTracker.API\\Program.cs",
+              "ToolTip": "D:\\Coding\\FinTracker.Backend\\FinTracker.Backend\\FinTracker.API\\Program.cs",
+              "RelativeToolTip": "FinTracker.API\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T16:30:16.433Z",
+              "EditorCaption": ""
             }
           ]
         }

@@ -1,4 +1,4 @@
-﻿using FinTracker.Domain;
+﻿using FinTracker.Domain.Models;
 
 namespace FinTracker.Parser;
 

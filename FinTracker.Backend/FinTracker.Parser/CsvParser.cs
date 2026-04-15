@@ -1,7 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using System.Globalization;
-using FinTracker.Domain;
+using FinTracker.Domain.Models;
 
 namespace FinTracker.Parser;
 
