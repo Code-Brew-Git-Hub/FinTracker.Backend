@@ -1,4 +1,5 @@
 using FinTracker.Data;
+using System.Text;
 
 namespace FinTracker.API;
 
