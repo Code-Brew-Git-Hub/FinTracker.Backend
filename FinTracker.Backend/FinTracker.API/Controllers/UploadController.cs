@@ -3,6 +3,7 @@ using FinTracker.Domain.Enums;
 using FinTracker.Parser;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using System.Transactions;
 
 namespace FinTracker.API.Controllers;
 
@@ -39,31 +40,22 @@ public class UploadController(ITransactionService transactionService) : Controll
         if (extension is not ".csv")
             return BadRequest("Допустимый формат файла: .csv");
 
-        // Читаем файл построчно
         using var stream = file.OpenReadStream();
         using var reader = new StreamReader(stream);
 
         var parser = new CsvParser();
-        var transactions = parser.ParseCSV(reader);
+        var transactions = await parser.ParseCSV(reader);
 
-        // Добавляем в бд
         foreach (var transaction in transactions)
         {
-            
-            var type = (transaction.Category == "Переводы") ? TransactionType.Transfer 
+            transaction.Source = SourceType.CSV;
+            transaction.Comment = string.Empty;
+            transaction.Type = (transaction.Category == "Переводы") ? TransactionType.Transfer 
                 : (transaction.Amount < 0 ? TransactionType.Expense : TransactionType.Income);
+            transaction.IsDeleted = false;
+            transaction.Date = transaction.Date.ToUniversalTime();
 
-            await transactionService.CreateAsync(
-                transaction.Date.ToUniversalTime(),
-                transaction.Amount,
-                transaction.Currency,
-                transaction.Description,
-                transaction.Category,
-                type,
-                SourceType.CSV,
-                string.Empty,
-                false
-            );
+            await transactionService.AddAsync(transaction);
         }
 
         // Возвращаем сводку 

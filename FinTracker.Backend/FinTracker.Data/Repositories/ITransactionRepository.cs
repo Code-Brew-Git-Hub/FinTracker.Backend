@@ -5,7 +5,8 @@ namespace FinTracker.Data.Repositories
     public interface ITransactionRepository
     {
         Task AddAsync(Transaction transaction, CancellationToken cancellationToken = default);
-        Task<Transaction> GetById(int id);
-        Task<List<Transaction>> GetAll();
+        Task<Transaction?> GetByIdAsync(int id);
+        Task<List<Transaction>> GetAllAsync();
+        Task UpdateAsync(Transaction transaction, CancellationToken cancellationToken = default);
     }
 }

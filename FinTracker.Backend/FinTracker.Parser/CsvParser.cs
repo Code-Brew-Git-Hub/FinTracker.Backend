@@ -7,7 +7,7 @@ namespace FinTracker.Parser;
 
 public class CsvParser
 {
-    public List<Transaction> ParseCSV(StreamReader reader)
+    public async Task<List<Transaction>> ParseCSV(StreamReader reader)
     {
         var config = new CsvConfiguration(CultureInfo.GetCultureInfo("ru-RU"))
         {

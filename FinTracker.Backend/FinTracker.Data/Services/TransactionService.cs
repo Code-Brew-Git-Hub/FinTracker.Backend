@@ -27,13 +27,23 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
         await transactionRepository.AddAsync(transaction, cancellationToken);
     }
 
-    public async Task<List<Transaction>> GetAll()
+    public async Task AddAsync(Transaction transaction, CancellationToken cancellationToken = default)
     {
-        return await transactionRepository.GetAll();
+        await transactionRepository.AddAsync(transaction, cancellationToken);
     }
 
-    public async Task<Transaction> GetById(int id)
+    public async Task<List<Transaction>> GetAllAsync()
     {
-        return await transactionRepository.GetById(id);
+        return await transactionRepository.GetAllAsync();
+    }
+
+    public async Task<Transaction?> GetByIdAsync(int id)
+    {
+        return await transactionRepository.GetByIdAsync(id);
+    }
+
+    public async Task UpdateAsync(Transaction transaction, CancellationToken cancellationToken = default)
+    {
+        await transactionRepository.UpdateAsync(transaction, cancellationToken);
     }
 }
