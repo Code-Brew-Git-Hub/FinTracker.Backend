@@ -8,7 +8,7 @@ namespace FinTracker.API.Controllers;
 
 [ApiController]
 [Route("Upload")]
-public class TransactionController(ITransactionService transactionService) : ControllerBase
+public class UploadController(ITransactionService transactionService) : ControllerBase
 {
     [HttpPost]
     [Route("Manual")]
@@ -16,11 +16,11 @@ public class TransactionController(ITransactionService transactionService) : Con
         string category, string typeStr, string comment)
     {
         if (!DateTime.TryParse(dataStr, out var data))
-            throw new Exception("Неправильно введна дата операции");
+            return BadRequest("Неправильно введна дата операции");
         if (!Enum.TryParse<CurrencyType>(currencyStr, out var currency))
-            throw new Exception("Неправильно введна валюта операции");
+            return BadRequest("Неправильно введна валюта операции");
         if (!Enum.TryParse<TransactionType>(typeStr, out var type))
-            throw new Exception("Неправильно введен тип операции");
+            return BadRequest("Неправильно введен тип операции");
         data = data.ToUniversalTime();        
 
         await transactionService.CreateAsync(data, amount, currency, description, 

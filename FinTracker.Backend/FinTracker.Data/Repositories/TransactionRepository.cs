@@ -10,5 +10,15 @@ namespace FinTracker.Data.Repositories
             await context.Transactions.AddAsync(transaction, cancellationToken);
             await context.SaveChangesAsync();
         }
+
+        public async Task<Transaction> GetById(int id)
+        {
+            return context.Transactions.Where(t => t.Id == id).FirstOrDefault();
+        }
+
+        public async Task<List<Transaction>> GetAll()
+        {
+            return context.Transactions.ToList();
+        }
     }
 }
