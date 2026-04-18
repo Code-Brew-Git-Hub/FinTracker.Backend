@@ -2,6 +2,7 @@
 using FinTracker.Data.Repositories;
 using FinTracker.Domain.Enums;
 using FinTracker.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinTracker.Data.Services;
 
@@ -45,5 +46,10 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
     public async Task UpdateAsync(Transaction transaction, CancellationToken cancellationToken = default)
     {
         await transactionRepository.UpdateAsync(transaction, cancellationToken);
+    }
+
+    public async Task<List<Transaction>> GetByFiltersAsync(TransactionFilters filters)
+    {
+        return await transactionRepository.GetByFiltersAsync(filters);
     }
 }

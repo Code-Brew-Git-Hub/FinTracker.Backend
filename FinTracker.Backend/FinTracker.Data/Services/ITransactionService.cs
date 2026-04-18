@@ -13,4 +13,5 @@ public interface ITransactionService
     Task<Transaction?> GetByIdAsync(int id);
     Task<List<Transaction>> GetAllAsync();
     Task UpdateAsync(Transaction transaction, CancellationToken cancellationToken = default);
+    Task<List<Transaction>> GetByFiltersAsync(TransactionFilters filters);
 }

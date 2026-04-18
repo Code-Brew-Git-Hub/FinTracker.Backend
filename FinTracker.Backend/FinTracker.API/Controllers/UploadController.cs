@@ -2,8 +2,6 @@
 using FinTracker.Domain.Enums;
 using FinTracker.Parser;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
-using System.Transactions;
 
 namespace FinTracker.API.Controllers;
 
@@ -13,7 +11,7 @@ public class UploadController(ITransactionService transactionService) : Controll
 {
     [HttpPost]
     [Route("Manual")]
-    public async Task<IActionResult> CreateManualAsync(string data, decimal amount, string currency, string description,
+    public async Task<ActionResult> CreateManualAsync(string data, decimal amount, string currency, string description,
         string category, string type, string comment)
     {
         if (!DateTime.TryParse(data, out var dataEnum))
@@ -29,7 +27,7 @@ public class UploadController(ITransactionService transactionService) : Controll
 
     [HttpPost]
     [Route("Csv")]
-    public async Task<IActionResult> CreateCsvAsync(IFormFile file)
+    public async Task<ActionResult> CreateCsvAsync(IFormFile file)
     {
         if (file is null || file.Length == 0)
             return BadRequest("Файл не передан или пуст.");

@@ -1,5 +1,6 @@
 ﻿
 using FinTracker.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinTracker.Data.Repositories
 {
@@ -38,6 +39,25 @@ namespace FinTracker.Data.Repositories
             oldTransaction.Type = transaction.Type;
 
             await context.SaveChangesAsync();
+        }
+
+        public async Task<List<Transaction>> GetByFiltersAsync(TransactionFilters filters)
+        {
+            var query = context.Transactions.AsQueryable();
+
+            if (filters.DateFilter != null && filters.DateFilter.Any())
+                query = query.Where(t => filters.DateFilter.Contains(t.Date));
+
+            if (filters.AmountFilter != null && filters.AmountFilter.Any())
+                query = query.Where(t => filters.AmountFilter.Contains(t.Amount));
+
+            if (filters.CategoryFilter != null && filters.CategoryFilter.Any())
+                query = query.Where(t => filters.CategoryFilter.Contains(t.Category));
+
+            if (filters.TypeFilter != null && filters.TypeFilter.Any())
+                query = query.Where(t => filters.TypeFilter.Contains(t.Type));
+
+            return await query.ToListAsync();
         }
     }
 }

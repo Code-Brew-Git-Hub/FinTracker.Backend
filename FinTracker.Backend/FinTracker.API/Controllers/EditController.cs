@@ -9,7 +9,7 @@ public class EditController(ITransactionService transactionService) : Controller
 {
     [Route("SoftDelete/{id}")]
     [HttpDelete]    
-    public async Task<IActionResult> SoftDelete(int id)
+    public async Task<ActionResult> SoftDelete(int id)
     {
         if (id < 0)
             return BadRequest("id must be grater then zero (id > 0)");
