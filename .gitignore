@@ -416,3 +416,5 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+/FinTracker.Backend/.vs/FinTracker.Backend.slnx/v18/DocumentLayout.json
+/FinTracker.Backend/.vs/FinTracker.Backend.slnx/v18/.suo
