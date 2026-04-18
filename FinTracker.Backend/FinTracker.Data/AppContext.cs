@@ -10,6 +10,7 @@ public class AppContext(DbContextOptions<AppContext> options) : DbContext(option
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Transaction>().HasKey(t => t.Id);
+        modelBuilder.Entity<Transaction>().Property(t => t.Currency).HasMaxLength(3);
         // Проверить остальные поля для Transaction
 
         base.OnModelCreating(modelBuilder);

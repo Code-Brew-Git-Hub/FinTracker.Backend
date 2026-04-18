@@ -4,19 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace FinTracker.API.Controllers;
 
 [ApiController]
-[Route("Checking")]
-public class CheckingController(ITransactionService transactionService) : ControllerBase
+[Route("Edit")]
+public class EditController(ITransactionService transactionService) : ControllerBase
 {
-    [Route("SoftDelete")]
+    [Route("SoftDelete/{id}")]
     [HttpDelete]    
     public async Task<IActionResult> SoftDelete(int id)
     {
         if (id < 0)
-            throw new Exception("id must be grater then zero (id > 0)");
+            return BadRequest("id must be grater then zero (id > 0)");
 
         var transaction = await transactionService.GetByIdAsync(id);
         if (transaction == null)
-            throw new Exception("Такой транзакции не существует");
+            return NotFound($"Транзакции с id {id} не существует");
 
         transaction.IsDeleted = true;
 

@@ -13,19 +13,17 @@ public class UploadController(ITransactionService transactionService) : Controll
 {
     [HttpPost]
     [Route("Manual")]
-    public async Task<IActionResult> CreateManualAsync(string dataStr, decimal amount, string currencyStr, string description,
-        string category, string typeStr, string comment)
+    public async Task<IActionResult> CreateManualAsync(string data, decimal amount, string currency, string description,
+        string category, string type, string comment)
     {
-        if (!DateTime.TryParse(dataStr, out var data))
+        if (!DateTime.TryParse(data, out var dataEnum))
             return BadRequest("Неправильно введна дата операции");
-        if (!Enum.TryParse<CurrencyType>(currencyStr, out var currency))
-            return BadRequest("Неправильно введна валюта операции");
-        if (!Enum.TryParse<TransactionType>(typeStr, out var type))
+        if (!Enum.TryParse<TransactionType>(type, out var typeEnum))
             return BadRequest("Неправильно введен тип операции");
-        data = data.ToUniversalTime();        
+        dataEnum = dataEnum.ToUniversalTime();        
 
-        await transactionService.CreateAsync(data, amount, currency, description, 
-            category, type, SourceType.Manual, comment, false);
+        await transactionService.CreateAsync(dataEnum, amount, currency, description, 
+            category, typeEnum, SourceType.Manual, comment, false);
         return NoContent();
     }
 
@@ -43,13 +41,12 @@ public class UploadController(ITransactionService transactionService) : Controll
         using var stream = file.OpenReadStream();
         using var reader = new StreamReader(stream);
 
-        var parser = new CsvParser();
-        var transactions = await parser.ParseCSV(reader);
+        var parser = new TransactionParser();
+        var transactions = await parser.Parse(reader, file.FileName);
 
         foreach (var transaction in transactions)
         {
             transaction.Source = SourceType.CSV;
-            transaction.Comment = string.Empty;
             transaction.Type = (transaction.Category == "Переводы") ? TransactionType.Transfer 
                 : (transaction.Amount < 0 ? TransactionType.Expense : TransactionType.Income);
             transaction.IsDeleted = false;
