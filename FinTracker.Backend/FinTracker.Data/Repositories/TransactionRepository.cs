@@ -12,19 +12,19 @@ namespace FinTracker.Data.Repositories
             await context.SaveChangesAsync();
         }
 
-        public async Task<Transaction?> GetByIdAsync(int id)
+        public async Task<Transaction?> GetByIdAsync(int id, bool hideDeleted)
         {
-            return context.Transactions.Where(t => t.Id == id).FirstOrDefault();
+            return context.Transactions.AsQueryable().Where(t => t.Id == id).Where(t => !hideDeleted || !t.IsDeleted).FirstOrDefault();
         }
 
-        public async Task<List<Transaction>> GetAllAsync()
+        public async Task<List<Transaction>> GetAllAsync(bool hideDeleted)
         {
-            return context.Transactions.ToList();
+            return context.Transactions.AsQueryable().Where(t => !hideDeleted || !t.IsDeleted).ToList();
         }
 
         public async Task UpdateAsync(Transaction transaction, CancellationToken cancellationToken = default)
         {
-            var oldTransaction = await GetByIdAsync(transaction.Id);
+            var oldTransaction = await GetByIdAsync(transaction.Id, false);
 
             if (oldTransaction == null)
                 throw new Exception("Такой транзакции не существует");
@@ -41,9 +41,9 @@ namespace FinTracker.Data.Repositories
             await context.SaveChangesAsync();
         }
 
-        public async Task<List<Transaction>> GetByFiltersAsync(TransactionFilters filters)
+        public async Task<List<Transaction>> GetByFiltersAsync(TransactionFilters filters, bool hideDeleted)
         {
-            var query = context.Transactions.AsQueryable();
+            var query = context.Transactions.AsQueryable().Where(t => !hideDeleted || !t.IsDeleted);
 
             if (filters.DateFilter != null && filters.DateFilter.Any())
                 query = query.Where(t => filters.DateFilter.Contains(t.Date));

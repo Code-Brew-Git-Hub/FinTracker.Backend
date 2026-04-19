@@ -10,31 +10,31 @@ public class TransactionsController(ITransactionService transactionService) : Co
 {
     [Route("GetById/{id}")]
     [HttpGet]
-    public async Task<ActionResult<Transaction>> GetById(int id)
+    public async Task<ActionResult<Transaction>> GetById(int id, bool hideDeleted)
     {
         if (id < 0)
             return BadRequest("id должен быть больше нуля (id > 0)");
 
-        var transaction = await transactionService.GetByIdAsync(id);
+        var transaction = await transactionService.GetByIdAsync(id, hideDeleted);
 
         if (transaction == null)
-            return NotFound($"Транзакции с id {id} не существует");
+            return NotFound($"Транзакции с id {id} не существует, или она удалена");
 
         return transaction;
     }
 
     [Route("GetAll")]
     [HttpGet]
-    public async Task<ActionResult<List<Transaction>>> GetAll(bool accept)
+    public async Task<ActionResult<List<Transaction>>> GetAll(bool accept, bool hideDeleted)
     {
         if (!accept)
             return NoContent();
-        return await transactionService.GetAllAsync();
+        return await transactionService.GetAllAsync(hideDeleted);
     }
 
     [Route("GetPack/{from}-{to}")]
     [HttpGet]
-    public async Task<ActionResult<List<Transaction>>> GetPack(int from, int to)
+    public async Task<ActionResult<List<Transaction>>> GetPack(int from, int to, bool hideDeleted)
     {
         if (from < 0)
             return BadRequest("from должен быть больше нуля (from > 0)");
@@ -45,7 +45,7 @@ public class TransactionsController(ITransactionService transactionService) : Co
 
         for (int i = from; i <= to; i++)
         {
-            var transaction = await transactionService.GetByIdAsync(i);
+            var transaction = await transactionService.GetByIdAsync(i, hideDeleted);
             if (transaction == null)
                 continue;
             transactions.Add(transaction);

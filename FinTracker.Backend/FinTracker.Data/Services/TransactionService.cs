@@ -33,14 +33,14 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
         await transactionRepository.AddAsync(transaction, cancellationToken);
     }
 
-    public async Task<List<Transaction>> GetAllAsync()
+    public async Task<List<Transaction>> GetAllAsync(bool hideDeleted)
     {
-        return await transactionRepository.GetAllAsync();
+        return await transactionRepository.GetAllAsync(hideDeleted);
     }
 
-    public async Task<Transaction?> GetByIdAsync(int id)
+    public async Task<Transaction?> GetByIdAsync(int id, bool hideDeleted)
     {
-        return await transactionRepository.GetByIdAsync(id);
+        return await transactionRepository.GetByIdAsync(id, hideDeleted);
     }
 
     public async Task UpdateAsync(Transaction transaction, CancellationToken cancellationToken = default)
@@ -48,8 +48,8 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
         await transactionRepository.UpdateAsync(transaction, cancellationToken);
     }
 
-    public async Task<List<Transaction>> GetByFiltersAsync(TransactionFilters filters)
+    public async Task<List<Transaction>> GetByFiltersAsync(TransactionFilters filters, bool hideDeleted)
     {
-        return await transactionRepository.GetByFiltersAsync(filters);
+        return await transactionRepository.GetByFiltersAsync(filters, hideDeleted);
     }
 }

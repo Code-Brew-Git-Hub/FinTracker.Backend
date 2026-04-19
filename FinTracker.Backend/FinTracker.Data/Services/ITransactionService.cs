@@ -10,8 +10,8 @@ public interface ITransactionService
         string category, TransactionType type, SourceType source, string comment, bool isDeleted,
         CancellationToken cancellationToken = default);
     Task AddAsync(Transaction transaction, CancellationToken cancellationToken = default);
-    Task<Transaction?> GetByIdAsync(int id);
-    Task<List<Transaction>> GetAllAsync();
+    Task<Transaction?> GetByIdAsync(int id, bool hideDeleted);
+    Task<List<Transaction>> GetAllAsync(bool hideDeleted);
     Task UpdateAsync(Transaction transaction, CancellationToken cancellationToken = default);
-    Task<List<Transaction>> GetByFiltersAsync(TransactionFilters filters);
+    Task<List<Transaction>> GetByFiltersAsync(TransactionFilters filters, bool hideDeleted);
 }
