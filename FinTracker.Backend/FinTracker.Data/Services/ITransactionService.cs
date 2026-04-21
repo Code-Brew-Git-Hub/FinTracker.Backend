@@ -1,13 +1,15 @@
 ﻿
 using FinTracker.Domain.Enums;
+using FinTracker.Domain.FilterModels;
 using FinTracker.Domain.Models;
 
 namespace FinTracker.Data.Services;
 
 public interface ITransactionService
 {
-    Task CreateAsync(DateTime date, decimal amount, string currency, string description,
-        string category, TransactionType type, SourceType source, string comment, bool isDeleted,
+    Task CreateAsync(DateTime date, decimal amount, string currency, CategoryEnum category,
+        string description, TypeEnum type, Scope? scope, string comment, bool isDeleted,
+        /*Card? from, Card? to,*/
         CancellationToken cancellationToken = default);
     Task AddAsync(Transaction transaction, CancellationToken cancellationToken = default);
     Task<Transaction?> GetByIdAsync(int id, bool hideDeleted);

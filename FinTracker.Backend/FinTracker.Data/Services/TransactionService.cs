@@ -1,15 +1,14 @@
-﻿
-using FinTracker.Data.Repositories;
+﻿using FinTracker.Data.Repositories;
 using FinTracker.Domain.Enums;
+using FinTracker.Domain.FilterModels;
 using FinTracker.Domain.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace FinTracker.Data.Services;
 
 public class TransactionService(ITransactionRepository transactionRepository) : ITransactionService
 {
-    public async Task CreateAsync(DateTime date, decimal amount, string currency, string description, 
-        string category, TransactionType type, SourceType source, string comment, bool isDeleted, 
+    public async Task CreateAsync(DateTime date, decimal amount, string currency, CategoryEnum category, string description, 
+        TypeEnum type, Scope? scope, string comment, bool isDeleted,/* Card? from, Card? to, */
         CancellationToken cancellationToken = default)
     {
         var transaction = new Transaction
@@ -17,12 +16,14 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
             Date = date,
             Amount = amount,
             Currency = currency,
-            Description = description,
             Category = category,
+            Description = description,
             Type = type,
-            Source = source,
+            Scope = scope,
             Comment = comment,
-            IsDeleted = isDeleted
+            IsDeleted = isDeleted/*,
+            From = from,
+            To = to*/
         };
 
         await transactionRepository.AddAsync(transaction, cancellationToken);

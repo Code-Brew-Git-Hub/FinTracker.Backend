@@ -1,6 +1,5 @@
-﻿
+﻿using FinTracker.Domain.FilterModels;
 using FinTracker.Domain.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace FinTracker.Data.Repositories
 {
@@ -30,34 +29,39 @@ namespace FinTracker.Data.Repositories
                 throw new Exception("Такой транзакции не существует");
 
             oldTransaction.Date = transaction.Date;
-            oldTransaction.Category = transaction.Category;
-            oldTransaction.Currency = transaction.Currency;
-            oldTransaction.Source = transaction.Source;
             oldTransaction.Amount = transaction.Amount;
-            oldTransaction.Comment = transaction.Comment;
+            oldTransaction.Currency = transaction.Currency;
+            oldTransaction.Category = transaction.Category;
             oldTransaction.Description = transaction.Description;
             oldTransaction.Type = transaction.Type;
+            oldTransaction.Scope = transaction.Scope;            
+            oldTransaction.Comment = transaction.Comment;
+            oldTransaction.IsDeleted = transaction.IsDeleted;
+            //oldTransaction.From = transaction.From;
+            //oldTransaction.To = transaction.To;            
 
             await context.SaveChangesAsync();
         }
 
         public async Task<List<Transaction>> GetByFiltersAsync(TransactionFilters filters, bool hideDeleted)
         {
-            var query = context.Transactions.AsQueryable().Where(t => !hideDeleted || !t.IsDeleted);
+            //var query = context.Transactions.AsQueryable().Where(t => !hideDeleted || !t.IsDeleted);
 
-            if (filters.DateFilter != null && filters.DateFilter.Any())
-                query = query.Where(t => filters.DateFilter.Contains(t.Date));
+            //if (filters.DateFilter != null && filters.DateFilter.Any())
+            //    query = query.Where(t => filters.DateFilter.Contains(t.Date));
 
-            if (filters.AmountFilter != null && filters.AmountFilter.Any())
-                query = query.Where(t => filters.AmountFilter.Contains(t.Amount));
+            //if (filters.AmountFilter != null && filters.AmountFilter.Any())
+            //    query = query.Where(t => filters.AmountFilter.Contains(t.Amount));
 
-            if (filters.CategoryFilter != null && filters.CategoryFilter.Any())
-                query = query.Where(t => filters.CategoryFilter.Contains(t.Category));
+            //if (filters.CategoryFilter != null && filters.CategoryFilter.Any())
+            //    query = query.Where(t => filters.CategoryFilter.Contains(t.Category));
 
-            if (filters.TypeFilter != null && filters.TypeFilter.Any())
-                query = query.Where(t => filters.TypeFilter.Contains(t.Type));
+            //if (filters.TypeFilter != null && filters.TypeFilter.Any())
+            //    query = query.Where(t => filters.TypeFilter.Contains(t.Type));
 
-            return await query.ToListAsync();
+            //return await query.ToListAsync();
+
+            throw new NotImplementedException();
         }
     }
 }

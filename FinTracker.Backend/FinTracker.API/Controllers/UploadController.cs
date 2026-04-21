@@ -1,5 +1,6 @@
 ﻿using FinTracker.Data.Services;
 using FinTracker.Domain.Enums;
+using FinTracker.Domain.Models;
 using FinTracker.Parser;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,17 +12,27 @@ public class UploadController(ITransactionService transactionService) : Controll
 {
     [HttpPost]
     [Route("Manual")]
-    public async Task<ActionResult> CreateManualAsync(string data, decimal amount, string currency, string description,
-        string category, string type, string comment)
+    public async Task<ActionResult> CreateManualAsync(string data, decimal amount, string currency, string category, 
+        string description, string type, string? scope, string comment/*, string? from, string? to*/)
     {
         if (!DateTime.TryParse(data, out var dataEnum))
             return BadRequest("Неправильно введна дата операции");
-        if (!Enum.TryParse<TransactionType>(type, out var typeEnum))
-            return BadRequest("Неправильно введен тип операции");
-        dataEnum = dataEnum.ToUniversalTime();        
 
-        await transactionService.CreateAsync(dataEnum, amount, currency, description, 
-            category, typeEnum, SourceType.Manual, comment, false);
+        if (!Enum.TryParse<CategoryEnum>(category, out var categoryEnum))
+            return BadRequest("Неправильно введна категория");
+
+        if (!Enum.TryParse<TypeEnum>(type, out var typeEnum))
+            return BadRequest("Неправильно введен тип операции");
+        dataEnum = dataEnum.ToUniversalTime();
+
+
+        Scope? scopeStruct = null;  // Сделать конвертацию из string в Scope 
+        throw new NotImplementedException("Не реализована конвертация из string scope в Scope scopeStruct");
+        Card? fromStruct = null;
+        Card? toStruct = null;
+
+        await transactionService.CreateAsync(dataEnum, amount, currency, categoryEnum,
+            description, typeEnum, scopeStruct, comment, false/*, fromStruct, toStruct*/);
         return NoContent();
     }
 
@@ -44,11 +55,9 @@ public class UploadController(ITransactionService transactionService) : Controll
 
         foreach (var transaction in transactions)
         {
-            transaction.Source = SourceType.CSV;
-            transaction.Type = (transaction.Category == "Переводы") ? TransactionType.Transfer 
-                : (transaction.Amount < 0 ? TransactionType.Expense : TransactionType.Income);
-            transaction.IsDeleted = false;
             transaction.Date = transaction.Date.ToUniversalTime();
+            transaction.Type = transaction.Amount < 0 ? TypeEnum.Expense : TypeEnum.Income;
+            transaction.IsDeleted = false;            
 
             await transactionService.AddAsync(transaction);
         }

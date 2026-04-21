@@ -60,8 +60,11 @@ public class CsvParser
             Map(t => t.Amount).Index(4);
             Map(t => t.Currency).Index(5);
             Map(t => t.Category).Index(9);
-            Map(t => t.Description).Index(11);            
-            // Comment, Source, Type — не в CSV, задаются в сервисе вручную
+            Map(t => t.Description).Index(11);
+            //Map(t => t.From).Index();
+            //Map(t => t.To).Index();
+
+            // Type, Scope, Comment, IsDeleted задаются в сервисе вручную
         }
     }
 
@@ -75,7 +78,10 @@ public class CsvParser
                 .TypeConverterOption.CultureInfo(CultureInfo.InvariantCulture);
             Map(t => t.Currency).Index(8);
             Map(t => t.Category).Index(10);
-            // Comment, Source, Type — не в CSV, задаются в сервисе вручную
+            //Map(t => t.From).Index();
+            //Map(t => t.To).Index();
+
+            // Type, Scope, Comment, IsDeleted задаются в сервисе вручную
             // Description отсутствует
         }
     }

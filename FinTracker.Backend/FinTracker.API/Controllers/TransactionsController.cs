@@ -43,9 +43,9 @@ public class TransactionsController(ITransactionService transactionService) : Co
 
         var transactions = new List<Transaction>();
 
-        for (int i = from; i <= to; i++)
+        for (int id = from; id <= to; id++)
         {
-            var transaction = await transactionService.GetByIdAsync(i, hideDeleted);
+            var transaction = await transactionService.GetByIdAsync(id, hideDeleted);
             if (transaction == null)
                 continue;
             transactions.Add(transaction);

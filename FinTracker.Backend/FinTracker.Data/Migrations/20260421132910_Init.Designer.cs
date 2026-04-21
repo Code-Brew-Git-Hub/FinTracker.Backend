@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinTracker.Data.Migrations
 {
     [DbContext(typeof(AppContext))]
-    [Migration("20260418142216_Init")]
+    [Migration("20260421132910_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -25,6 +25,25 @@ namespace FinTracker.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("FinTracker.Domain.Models.Scope", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("Name");
+
+                    b.ToTable("Scopes");
+                });
+
             modelBuilder.Entity("FinTracker.Domain.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
@@ -36,9 +55,8 @@ namespace FinTracker.Data.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Category")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Comment")
                         .IsRequired()
@@ -46,8 +64,7 @@ namespace FinTracker.Data.Migrations
 
                     b.Property<string>("Currency")
                         .IsRequired()
-                        .HasMaxLength(3)
-                        .HasColumnType("character varying(3)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
@@ -59,7 +76,7 @@ namespace FinTracker.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("Source")
+                    b.Property<int?>("ScopeId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Type")
@@ -67,7 +84,18 @@ namespace FinTracker.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ScopeId");
+
                     b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("FinTracker.Domain.Models.Transaction", b =>
+                {
+                    b.HasOne("FinTracker.Domain.Models.Scope", "Scope")
+                        .WithMany()
+                        .HasForeignKey("ScopeId");
+
+                    b.Navigation("Scope");
                 });
 #pragma warning restore 612, 618
         }
