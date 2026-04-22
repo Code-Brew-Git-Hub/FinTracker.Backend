@@ -8,7 +8,7 @@ namespace FinTracker.Data.Services;
 public interface ITransactionService
 {
     Task CreateAsync(DateTime date, decimal amount, string currency, CategoryEnum category,
-        string description, TypeEnum type, Scope? scope, string comment, bool isDeleted,
+        string? description, Scope? scope, string? comment, bool isDeleted,
         /*Card? from, Card? to,*/
         CancellationToken cancellationToken = default);
     Task AddAsync(Transaction transaction, CancellationToken cancellationToken = default);

@@ -8,6 +8,7 @@ namespace FinTracker.API.Controllers;
 [Route("Transactions")]
 public class TransactionsController(ITransactionService transactionService) : ControllerBase
 {
+    #region Получение транзакции по id
     [Route("GetById/{id}")]
     [HttpGet]
     public async Task<ActionResult<Transaction>> GetById(int id, bool hideDeleted)
@@ -22,7 +23,9 @@ public class TransactionsController(ITransactionService transactionService) : Co
 
         return transaction;
     }
+    #endregion
 
+    #region Получение всех транзакций
     [Route("GetAll")]
     [HttpGet]
     public async Task<ActionResult<List<Transaction>>> GetAll(bool accept, bool hideDeleted)
@@ -31,15 +34,17 @@ public class TransactionsController(ITransactionService transactionService) : Co
             return NoContent();
         return await transactionService.GetAllAsync(hideDeleted);
     }
+    #endregion
 
+    #region Получение пачки транзакций
     [Route("GetPack/{from}-{to}")]
     [HttpGet]
     public async Task<ActionResult<List<Transaction>>> GetPack(int from, int to, bool hideDeleted)
     {
         if (from < 0)
-            return BadRequest("from должен быть больше нуля (from > 0)");
+            return BadRequest("from должен быть больше нуля (from >= 0)");
         if (to < 0)
-            return BadRequest("to должен быть больше нуля (to > 0)");
+            return BadRequest("to должен быть больше нуля (to >= 0)");
 
         var transactions = new List<Transaction>();
 
@@ -50,9 +55,13 @@ public class TransactionsController(ITransactionService transactionService) : Co
                 continue;
             transactions.Add(transaction);
         }
-        
-        return transactions;
+
+        return Ok(new
+        {
+            RequestedQuantity = from - to + 1,  // Запрошенное количество транзакций
+            ReceivedQuantity = transactions.Count,  // Полученное количество транзакций
+            Transactions = transactions  // Транзакции
+        });
     }
+#endregion
 }
-
-

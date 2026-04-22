@@ -7,8 +7,8 @@ namespace FinTracker.Data.Services;
 
 public class TransactionService(ITransactionRepository transactionRepository) : ITransactionService
 {
-    public async Task CreateAsync(DateTime date, decimal amount, string currency, CategoryEnum category, string description, 
-        TypeEnum type, Scope? scope, string comment, bool isDeleted,/* Card? from, Card? to, */
+    public async Task CreateAsync(DateTime date, decimal amount, string currency, CategoryEnum category, string? description, 
+        Scope? scope, string? comment, bool isDeleted,/* Card? from, Card? to, */
         CancellationToken cancellationToken = default)
     {
         var transaction = new Transaction
@@ -18,7 +18,7 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
             Currency = currency,
             Category = category,
             Description = description,
-            Type = type,
+            Type = amount >= 0 ? TypeEnum.Income : TypeEnum.Expense,
             Scope = scope,
             Comment = comment,
             IsDeleted = isDeleted/*,

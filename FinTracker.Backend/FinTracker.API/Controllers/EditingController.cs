@@ -8,12 +8,13 @@ namespace FinTracker.API.Controllers;
 [Route("Editing")]
 public class EditingController(ITransactionService transactionService) : ControllerBase
 {
+    #region "Мягкое" удаление
     [Route("SoftDelete/{id}")]
     [HttpDelete]    
     public async Task<ActionResult> SoftDelete(int id)
     {
         if (id < 0)
-            return BadRequest("id должен быть больше нуля (id > 0)");
+            return BadRequest("id должен быть больше нуля (id >= 0)");
 
         var transaction = await transactionService.GetByIdAsync(id, false);
         if (transaction == null)
@@ -24,7 +25,9 @@ public class EditingController(ITransactionService transactionService) : Control
         await transactionService.UpdateAsync(transaction);
         return NoContent();
     }
+    #endregion
 
+    #region Обновление значений транзакции (изменение транзакции)
     [Route("Update/{id}")]
     [HttpPut]
     public async Task<ActionResult> Update(int id/*, DateTime? date, decimal? amount, string? currency,
@@ -39,4 +42,5 @@ public class EditingController(ITransactionService transactionService) : Control
 
         return Ok();
     }
+    #endregion
 }

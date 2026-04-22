@@ -8,7 +8,7 @@ public class ScopeService(IScopeRepository scopeRepository) : IScopeService
 {
     public async Task CreateAsync(string name, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        await scopeRepository.AddAsync(new Scope { Name = name });
     }
 
     public async Task<Scope?> GetScopeByName(string name)

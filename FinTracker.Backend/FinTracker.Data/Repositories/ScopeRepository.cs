@@ -6,7 +6,8 @@ namespace FinTracker.Data.Repositories
     {
         public async Task AddAsync(Scope scope, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            await context.Scopes.AddAsync(scope, cancellationToken);
+            await context.SaveChangesAsync();
         }
 
         public async Task<Scope?> GetScopeByName(string name)

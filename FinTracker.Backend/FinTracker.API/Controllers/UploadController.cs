@@ -10,34 +10,40 @@ namespace FinTracker.API.Controllers;
 [Route("Upload")]
 public class UploadController(ITransactionService transactionService, IScopeService scopeService) : ControllerBase
 {
+    #region Добавление транзакий вручную
     [HttpPost]
     [Route("Manual")]
     public async Task<ActionResult> CreateManualAsync(string data, decimal amount, string currency, string category, 
-        string description, string type, string? scope, string comment/*, string? from, string? to*/)
+        string? description, string? scope, string? comment/*, string? from, string? to*/)
     {
         if (!DateTime.TryParse(data, out var dataEnum))
             return BadRequest("Неправильно введна дата операции");
 
         if (!Enum.TryParse<CategoryEnum>(category, out var categoryEnum))
             return BadRequest("Неправильно введна категория");
-
-        if (!Enum.TryParse<TypeEnum>(type, out var typeEnum))
-            return BadRequest("Неправильно введен тип операции");
-        dataEnum = dataEnum.ToUniversalTime();
+        
 
         Scope? scopeStruct = null;
         if (scope != null)
         {
             scopeStruct = await scopeService.GetScopeByName(scope);
-            await scopeService.CreateAsync(scope);
-            scopeStruct = await scopeService.GetScopeByName(scope);
+            if (scopeStruct == null)
+            {
+                await scopeService.CreateAsync(scope);
+                scopeStruct = await scopeService.GetScopeByName(scope);
+            }
         }
 
-        await transactionService.CreateAsync(dataEnum, amount, currency, categoryEnum,
-            description, typeEnum, scopeStruct, comment, false/*, fromStruct, toStruct*/);
+        var desc = description != null ? description : string.Empty;
+        var comm = comment != null ? comment : string.Empty;
+
+        await transactionService.CreateAsync(dataEnum.ToUniversalTime(), amount, currency, categoryEnum,
+            desc, scopeStruct, comm, false/*, fromStruct, toStruct*/);
         return NoContent();
     }
+    #endregion
 
+    #region Добавление транзакций из CSV файла
     [HttpPost]
     [Route("Csv")]
     public async Task<ActionResult> CreateCsvAsync(IFormFile file)
@@ -70,5 +76,5 @@ public class UploadController(ITransactionService transactionService, IScopeServ
             Created = transactions.Count
         });
     }
-
+    #endregion
 }
