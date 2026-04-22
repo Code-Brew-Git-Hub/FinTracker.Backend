@@ -8,7 +8,7 @@ namespace FinTracker.API.Controllers;
 
 [ApiController]
 [Route("Upload")]
-public class UploadController(ITransactionService transactionService) : ControllerBase
+public class UploadController(ITransactionService transactionService, IScopeService scopeService) : ControllerBase
 {
     [HttpPost]
     [Route("Manual")]
@@ -25,11 +25,13 @@ public class UploadController(ITransactionService transactionService) : Controll
             return BadRequest("Неправильно введен тип операции");
         dataEnum = dataEnum.ToUniversalTime();
 
-
-        Scope? scopeStruct = null;  // Сделать конвертацию из string в Scope 
-        throw new NotImplementedException("Не реализована конвертация из string scope в Scope scopeStruct");
-        Card? fromStruct = null;
-        Card? toStruct = null;
+        Scope? scopeStruct = null;
+        if (scope != null)
+        {
+            scopeStruct = await scopeService.GetScopeByName(scope);
+            await scopeService.CreateAsync(scope);
+            scopeStruct = await scopeService.GetScopeByName(scope);
+        }
 
         await transactionService.CreateAsync(dataEnum, amount, currency, categoryEnum,
             description, typeEnum, scopeStruct, comment, false/*, fromStruct, toStruct*/);

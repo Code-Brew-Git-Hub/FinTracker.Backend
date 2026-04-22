@@ -1,32 +1,18 @@
 ﻿
+using FinTracker.Data.Repositories;
 using FinTracker.Domain.Models;
 
 namespace FinTracker.Data.Services;
 
-public class ScopeService : IScopeService
+public class ScopeService(IScopeRepository scopeRepository) : IScopeService
 {
-    public Task AddAsync(Scope scope, CancellationToken cancellationToken = default)
+    public async Task CreateAsync(string name, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task CreateAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<Scope?> GetScopeByName(string name)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<Scope>> GetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Scope> GetByIdAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateAsync(Scope scope, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
+        return await scopeRepository.GetScopeByName(name);
     }
 }

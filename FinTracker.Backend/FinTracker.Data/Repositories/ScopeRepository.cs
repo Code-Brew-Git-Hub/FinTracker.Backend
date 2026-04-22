@@ -2,26 +2,16 @@
 
 namespace FinTracker.Data.Repositories
 {
-    public class ScopeRepository : IScopeRepository
+    public class ScopeRepository(AppContext context) : IScopeRepository
     {
-        public Task AddAsync(Scope scope, CancellationToken cancellationToken = default)
+        public async Task AddAsync(Scope scope, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Scope>> GetAllAsync()
+        public async Task<Scope?> GetScopeByName(string name)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<Scope> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(Scope scope, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
+            return context.Scopes.AsQueryable().Where(s => s.Name == name).FirstOrDefault();
         }
     }
 }
