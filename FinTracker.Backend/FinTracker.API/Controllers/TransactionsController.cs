@@ -58,7 +58,7 @@ public class TransactionsController(ITransactionService transactionService) : Co
 
         return Ok(new
         {
-            RequestedQuantity = from - to + 1,  // Запрошенное количество транзакций
+            RequestedQuantity = to - from + 1,  // Запрошенное количество транзакций
             ReceivedQuantity = transactions.Count,  // Полученное количество транзакций
             Transactions = transactions  // Транзакции
         });

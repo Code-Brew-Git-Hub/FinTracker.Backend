@@ -39,13 +39,13 @@ public class EditingController(ITransactionService transactionService, IScopeSer
 
         if (date == null && amount == null && currency == null && category == null 
             && description == null && scope == null && comment == null)
-            return BadRequest("Вы не переадли данные, которые надо обновить");
+            return BadRequest("Вы не передали данные, которые надо обновить");
 
-        if (!DateTime.TryParse(date, out var DateEnum))
-            return BadRequest("Неправильное значение date");
+        if (date != null && !DateTime.TryParse(date, out var DateEnum))
+            return BadRequest("Неправильно введна дата операции");
 
-        if (!Enum.TryParse<CategoryEnum>(category, out var categoryEnum))
-            return BadRequest("Неправильное значение category");
+        if (category != null && !Enum.TryParse<CategoryEnum>(category, out var categoryEnum))
+            return BadRequest("Неправильно введна категория");
 
         Scope? scopeStruct = null;
 
