@@ -1,5 +1,6 @@
 ﻿using FinTracker.Domain.FilterModels;
 using FinTracker.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinTracker.Data.Repositories
 {
@@ -45,23 +46,29 @@ namespace FinTracker.Data.Repositories
 
         public async Task<List<Transaction>> GetByFiltersAsync(TransactionFilters filters, bool hideDeleted)
         {
-            //var query = context.Transactions.AsQueryable().Where(t => !hideDeleted || !t.IsDeleted);
+            var query = context.Transactions.AsQueryable().Where(t => !hideDeleted || !t.IsDeleted);
 
-            //if (filters.DateFilter != null && filters.DateFilter.Any())
-            //    query = query.Where(t => filters.DateFilter.Contains(t.Date));
+            // Date filter (range)
+            if (filters.DateFilter != null)
+                query = query.Where(t => filters.DateFilter.From <= t.Date && t.Date <= filters.DateFilter.To);
 
-            //if (filters.AmountFilter != null && filters.AmountFilter.Any())
-            //    query = query.Where(t => filters.AmountFilter.Contains(t.Amount));
+            // Amount filter (range)
+            if (filters.AmountFilter != null)
+                query = query.Where(t => filters.AmountFilter.From <= t.Amount && t.Amount <= filters.AmountFilter.To);
 
-            //if (filters.CategoryFilter != null && filters.CategoryFilter.Any())
-            //    query = query.Where(t => filters.CategoryFilter.Contains(t.Category));
+            // Category filter (list)
+            if (filters.CategoryFilter != null && filters.CategoryFilter.Any())
+                query = query.Where(t => filters.CategoryFilter.Contains(t.Category));
 
-            //if (filters.TypeFilter != null && filters.TypeFilter.Any())
-            //    query = query.Where(t => filters.TypeFilter.Contains(t.Type));
+            // Type filter (list)
+            if (filters.TypeFilter != null && filters.TypeFilter.Any())
+                query = query.Where(t => filters.TypeFilter.Contains(t.Type));
 
-            //return await query.ToListAsync();
+            // Scope filter (list)
+            if (filters.ScopeFilter != null && filters.ScopeFilter.Any())
+                query = query.Where(t => t.Scope != null && filters.ScopeFilter.Contains(t.Scope));
 
-            throw new NotImplementedException();
+            return await query.ToListAsync<Transaction>();
         }
     }
 }
