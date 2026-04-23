@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel;
+
 namespace FinTracker.Domain.Enums;
 
 /// <summary>
@@ -9,6 +11,7 @@ public enum CategoryEnum
     /// <summary>
     /// Переводы
     /// </summary>
+    [Description("Переводы")]
     Transfer
     // и так далее
 }
