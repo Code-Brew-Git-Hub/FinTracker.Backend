@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FinTracker.Data.Services;
 using FinTracker.Domain.Models;
-using FinTracker.Domain.FilterModels;
-using FinTracker.Domain.Enums;
 
 namespace FinTracker.API.Controllers;
 

@@ -1,4 +1,5 @@
-﻿using FinTracker.Domain.Models;
+﻿using FinTracker.Domain.Interfaces.Repositories;
+using FinTracker.Domain.Models;
 
 namespace FinTracker.Data.Repositories
 {
@@ -8,11 +9,6 @@ namespace FinTracker.Data.Repositories
         {
             await context.Scopes.AddAsync(scope, cancellationToken);
             await context.SaveChangesAsync();
-        }
-
-        public async Task<Scope?> GetScopeByName(string name)
-        {
-            return context.Scopes.AsQueryable().Where(s => s.Name == name).FirstOrDefault();
         }
     }
 }

@@ -8,8 +8,9 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddData();
+        builder.Services.AddRepositories();
         builder.Services.AddServices();
+        builder.Services.AddContext();
         builder.Services.AddControllers();
         builder.Services.AddSwaggerGen();
 

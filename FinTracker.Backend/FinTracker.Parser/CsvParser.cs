@@ -1,7 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using FinTracker.Domain.Models;
-using FinTracker.Parser.Converters;
 using System.Globalization;
 
 namespace FinTracker.Parser;
@@ -60,8 +59,7 @@ public class CsvParser
             Map(t => t.Date).Index(0);
             Map(t => t.Amount).Index(4);
             Map(t => t.Currency).Index(5);
-            Map(t => t.Category).Index(9)
-                .TypeConverter<CategoryEnumConverter>(); ;
+            Map(t => t.Category).Index(9);
             Map(t => t.Description).Index(11);
             //Map(t => t.From).Index();
             //Map(t => t.To).Index();
@@ -80,8 +78,7 @@ public class CsvParser
                 .TypeConverterOption.NumberStyles(NumberStyles.Any)
                 .TypeConverterOption.CultureInfo(CultureInfo.InvariantCulture);
             Map(t => t.Currency).Index(8);
-            Map(t => t.Category).Index(10)
-                .TypeConverter<CategoryEnumConverter>(); ;
+            Map(t => t.Category).Index(10);
             //Map(t => t.From).Index();
             //Map(t => t.To).Index();
 

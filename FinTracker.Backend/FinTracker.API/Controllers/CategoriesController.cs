@@ -1,4 +1,6 @@
 ﻿using FinTracker.Data.Services;
+using FinTracker.Domain.Models;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinTracker.API.Controllers;
@@ -39,8 +41,4 @@ public class CategoriesController(ITransactionService transactionService, IScope
     {
         throw new NotImplementedException();
     }
-
-
-    // Временная заглушка
-    public class Category { }
 }

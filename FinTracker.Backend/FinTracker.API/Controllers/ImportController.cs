@@ -32,10 +32,10 @@ public class ImportController(ITransactionService transactionService, IScopeServ
         foreach (var transaction in transactions)
         {
             transaction.Date = transaction.Date.ToUniversalTime();
-            transaction.Type = transaction.Amount < 0 ? TypeEnum.Expense : TypeEnum.Income;
+            transaction.Type = transaction.Amount < 0 ? TransactionType.Expense : TransactionType.Income;
             transaction.IsDeleted = false;
 
-            await transactionService.AddAsync(transaction);
+            //await transactionService.AddAsync(transaction);
         }
 
         // Возвращаем сводку 
