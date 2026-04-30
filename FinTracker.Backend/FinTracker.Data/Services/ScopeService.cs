@@ -5,8 +5,8 @@ namespace FinTracker.Data.Services;
 
 public class ScopeService(IScopeRepository scopeRepository) : IScopeService
 {
-    public async Task CreateAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<Scope?> GetByNameAsync(string name)
     {
-        await scopeRepository.AddAsync(new Scope { Name = name });
+        return await scopeRepository.GetByNameAsync(name);
     }
 }

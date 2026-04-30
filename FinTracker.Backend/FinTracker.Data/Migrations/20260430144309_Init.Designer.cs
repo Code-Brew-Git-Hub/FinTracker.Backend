@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinTracker.Data.Migrations
 {
     [DbContext(typeof(AppContext))]
-    [Migration("20260430100557_Init")]
+    [Migration("20260430144309_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -99,7 +99,6 @@ namespace FinTracker.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")

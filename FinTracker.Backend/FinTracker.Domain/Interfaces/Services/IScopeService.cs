@@ -1,6 +1,8 @@
-﻿namespace FinTracker.Data.Services;
+﻿using FinTracker.Domain.Models;
+
+namespace FinTracker.Data.Services;
 
 public interface IScopeService
 {
-    Task CreateAsync(string name, CancellationToken cancellationToken = default);
+    Task<Scope?> GetByNameAsync(string name);
 }

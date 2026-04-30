@@ -1,14 +1,22 @@
 ﻿using FinTracker.Domain.Interfaces.Repositories;
 using FinTracker.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace FinTracker.Data.Repositories
+namespace FinTracker.Data.Repositories;
+
+public class ScopeRepository(AppContext context) : IScopeRepository
 {
-    public class ScopeRepository(AppContext context) : IScopeRepository
+    public async Task<Scope?> GetByIdAsync(Guid id)
     {
-        public async Task AddAsync(Scope scope, CancellationToken cancellationToken = default)
-        {
-            await context.Scopes.AddAsync(scope, cancellationToken);
-            await context.SaveChangesAsync();
-        }
+        return await context.Scopes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
+
+    public async Task<Scope?> GetByNameAsync(string name)
+    {
+        return await context.Scopes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Name == name);
     }
 }

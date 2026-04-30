@@ -4,7 +4,11 @@ namespace FinTracker.Data.Services;
 
 public interface ITransactionService
 {
-    Task CreateAsync(DateTime date, decimal amount, string currency, Category category,
-        string? description, Scope? scope, string? comment, bool isDeleted,
+    Task CreateAsync(decimal amount, string currency, DateTime date, string? description, 
+        string? comment, Category category, Scope? scope,
         CancellationToken cancellationToken = default);
+
+    Task<Transaction?> GetByIdAsync(Guid id);
+
+    Task UpdateAsync(Transaction transaction);
 }

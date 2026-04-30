@@ -9,7 +9,7 @@ public class Transaction
     public decimal Amount { get; set; }  // Сумма транзакции (1500 | 124,12)
     public string Currency { get; set; } = string.Empty; // Валюта транзакции (например RUB, USD)
     public DateTime Date { get; set; }  // Дата платежа (11.02.2025 11:46:53 | 24.03.2025)
-    public string Description { get; set; } = string.Empty; // Описание (Между счетами)
+    public string? Description { get; set; } // Описание (Между счетами)
     public string? Comment { get; set; } // Комментарий пользователя
     public TransactionType Type { get; set; }  // Тип (expense / income)
     public bool IsDeleted { get; set; } // Признак soft delete
@@ -21,7 +21,7 @@ public class Transaction
     // Navigation
     public Category Category { get; set; }  // Категория
     public Scope? Scope { get; set; }  // Группа    
-    public ICollection<TransactionTag> TransactionTags { get; set; } = [];  // Теги
+    //public ICollection<TransactionTag> TransactionTags { get; set; } = [];  // Теги
     /*
      * public ICollection<TransactionLinkEntry> LinkEntries { get; set; } = [];  // 
      * public ICollection<TransactionItem> Items { get; set; } = [];  // Элементы транзакции (хлеб, колбаса, вода)

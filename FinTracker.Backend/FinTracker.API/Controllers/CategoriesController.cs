@@ -1,4 +1,5 @@
 ﻿using FinTracker.Data.Services;
+using FinTracker.Domain.Interfaces.Services;
 using FinTracker.Domain.Models;
 
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,8 @@ namespace FinTracker.API.Controllers;
 
 [ApiController]
 [Route("api/categories")]
-public class CategoriesController(ITransactionService transactionService, IScopeService scopeService) : ControllerBase
+public class CategoriesController(ITransactionService transactionService, IScopeService scopeService,
+    ICategoryService categoryService) : ControllerBase
 {
     [HttpGet]
     public async Task<Category[]> GetAll()
@@ -23,9 +25,13 @@ public class CategoriesController(ITransactionService transactionService, IScope
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create()
+    public async Task<ActionResult> Create(string name)
     {
-        throw new NotImplementedException();
+        if (await categoryService.GetByNameAsync(name) != null)
+            return BadRequest("Ошибка: Такая категория уже существует");
+
+        await categoryService.CreateAsync(name);
+        return Ok();
     }
 
     [Route("{id}")]

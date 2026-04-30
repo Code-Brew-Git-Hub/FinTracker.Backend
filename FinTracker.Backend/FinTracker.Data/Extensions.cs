@@ -13,7 +13,7 @@ public static class Extensions
     {
         var DbHost = Environment.GetEnvironmentVariable("DBHOST") ?? "localhost";
         var Database = Environment.GetEnvironmentVariable("DATABASE") ?? "FinTrackerDb";
-        var Username = Environment.GetEnvironmentVariable("USERNAME") ?? "postgres";
+        var Username = Environment.GetEnvironmentVariable("DBUSERNAME") ?? "postgres";
         var Password = Environment.GetEnvironmentVariable("PASSWORD") ?? "123456";
 
         serviceCollection.AddDbContext<AppContext>(x =>
