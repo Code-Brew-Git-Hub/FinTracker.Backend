@@ -1,43 +1,52 @@
 ﻿
 using FinTracker.Domain.Interfaces.Repositories;
 using FinTracker.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinTracker.Data.Repositories;
 
 public class TagRepository(AppDbContext context) : ITagRepository
 {
-    public Task AddAsync(Tag entity)
+    public async Task AddAsync(Tag entity)
     {
-        throw new NotImplementedException();
+        await context.Tags
+            .AddAsync(entity);
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var tag = await GetByIdAsync(id);
+        if (tag != null)
+            context.Tags
+                .Remove(tag);
     }
 
-    public Task<IEnumerable<Tag>> GetAllAsync()
+    public async Task<IEnumerable<Tag>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await context.Tags
+            .ToListAsync();
     }
 
-    public Task<Tag?> GetByIdAsync(Guid id)
+    public async Task<Tag?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await context.Tags
+            .FindAsync(id);
     }
 
-    public Task<IEnumerable<Tag>> GetByNamesAsync(IEnumerable<string> names)
+    public async Task<IEnumerable<Tag>> GetByNamesAsync(IEnumerable<string> names)
     {
-        throw new NotImplementedException();
+        return await context.Tags
+            .Where(tg => names.Contains(tg.Name))
+            .ToListAsync();
     }
 
-    public Task SaveChangesAsync()
+    public async Task SaveChangesAsync()
     {
-        throw new NotImplementedException();
+        await context.SaveChangesAsync();
     }
 
-    public Task UpdateAsync(Tag entity)
+    public async Task UpdateAsync(Tag entity)
     {
-        throw new NotImplementedException();
+        context.Tags.Update(entity);
     }
 }

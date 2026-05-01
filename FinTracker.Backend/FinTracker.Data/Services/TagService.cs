@@ -7,18 +7,32 @@ namespace FinTracker.Data.Services;
 
 public class TagService(ITagRepository tagRepository) : ITagService
 {
-    public Task<Tag> CreateAsync(string name)
+    public async Task<Tag> CreateAsync(string name)
     {
-        throw new NotImplementedException();
+        var existing = await tagRepository.GetByNamesAsync([name]);
+        if (existing.Any())
+            throw new ArgumentException($"Tag '{name}' already exists");
+
+        var tag = new Tag()
+        {
+            Id = Guid.NewGuid(),
+            Name = name
+        };
+
+        await tagRepository.AddAsync(tag);
+        await tagRepository.SaveChangesAsync();
+
+        return tag;
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        await tagRepository.DeleteAsync(id);
+        await tagRepository.SaveChangesAsync();
     }
 
-    public Task<IEnumerable<Tag>> GetAllAsync()
+    public async Task<IEnumerable<Tag>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await tagRepository.GetAllAsync();
     }
 }

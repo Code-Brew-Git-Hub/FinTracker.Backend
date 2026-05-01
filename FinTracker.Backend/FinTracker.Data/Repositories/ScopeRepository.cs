@@ -30,6 +30,12 @@ public class ScopeRepository(AppDbContext context) : IScopeRepository
         return await context.Scopes.FindAsync(id);
     }
 
+    public async Task<Scope?> GetByNameAsync(string name)
+    {
+        return await context.Scopes
+            .FirstOrDefaultAsync(sc => sc.Name == name);
+    }
+
     public async Task SaveChangesAsync()
     {
         await context.SaveChangesAsync();

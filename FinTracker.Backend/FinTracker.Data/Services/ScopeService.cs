@@ -1,4 +1,5 @@
-﻿using FinTracker.Domain.Interfaces.Repositories;
+﻿using FinTracker.Data.Repositories;
+using FinTracker.Domain.Interfaces.Repositories;
 using FinTracker.Domain.Models;
 
 namespace FinTracker.Data.Services;
@@ -8,6 +9,10 @@ public class ScopeService(IScopeRepository scopeRepository,
 {
     public async Task<Scope> CreateAsync(string name)
     {
+        var existing = await scopeRepository.GetByNameAsync(name);
+        if (existing != null)
+            throw new ArgumentException($"Scope '{name}' already exists");
+
         var newScope = new Scope()
         {
             Id = Guid.NewGuid(),
