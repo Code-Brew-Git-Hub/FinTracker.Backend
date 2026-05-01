@@ -3,35 +3,58 @@ using FinTracker.Domain.Models;
 
 namespace FinTracker.Data.Services;
 
-public class ScopeService(IScopeRepository scopeRepository) : IScopeService
+public class ScopeService(IScopeRepository scopeRepository,
+    ITransactionRepository transactionRepository) : IScopeService
 {
-    public Task<Scope> CreateAsync(string name)
+    public async Task<Scope> CreateAsync(string name)
     {
-        throw new NotImplementedException();
+        var newScope = new Scope()
+        {
+            Id = Guid.NewGuid(),
+            Name = name
+        };
+
+        await scopeRepository.AddAsync(newScope);
+        await scopeRepository.SaveChangesAsync();
+
+        return newScope;
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        await scopeRepository.DeleteAsync(id);
+        await scopeRepository.SaveChangesAsync();
     }
 
-    public Task<IEnumerable<Scope>> GetAllAsync()
+    public async Task<IEnumerable<Scope>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await scopeRepository.GetAllAsync();
     }
 
-    public Task<Scope> GetByIdAsync(Guid id)
+    public async Task<Scope> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await scopeRepository.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException($"Scope {id} not found");
     }
 
-    public Task<IEnumerable<Transaction>> GetTransactionsAsync(Guid scopeId)
+    public async Task<IEnumerable<Transaction>> GetTransactionsAsync(Guid scopeId)
     {
-        throw new NotImplementedException();
+        var scope = await scopeRepository.GetByIdAsync(scopeId)
+            ?? throw new KeyNotFoundException($"Scope {scopeId} not found");
+
+        return await transactionRepository.GetByScopeIdAsync(scopeId);
     }
 
-    public Task<Scope> UpdateAsync(Guid id, string name)
+    public async Task<Scope> UpdateAsync(Guid id, string name)
     {
-        throw new NotImplementedException();
+        var scope = await scopeRepository.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException($"Scope {id} not found");
+
+        scope.Name = name;
+
+        await scopeRepository.UpdateAsync(scope);
+        await scopeRepository.SaveChangesAsync();
+
+        return scope;
     }
 }

@@ -7,42 +7,49 @@ namespace FinTracker.Data.Repositories;
 
 public class TransactionRepository(AppDbContext context) : ITransactionRepository
 {
-    public Task AddAsync(Transaction entity)
+    public async Task AddAsync(Transaction entity)
     {
         throw new NotImplementedException();
     }
 
-    public Task BulkUpdateAsync(IEnumerable<Guid> ids, BulkUpdateData data)
+    public async Task BulkUpdateAsync(IEnumerable<Guid> ids, BulkUpdateData data)
     {
         throw new NotImplementedException();
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Transaction>> GetAllAsync()
+    public async Task<IEnumerable<Transaction>> GetAllAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task<Transaction?> GetByIdAsync(Guid id)
+    public async Task<Transaction?> GetByIdAsync(Guid id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Transaction>> GetFilteredAsync(TransactionFilter filter)
+    public async Task<IEnumerable<Transaction>> GetByScopeIdAsync(Guid scopeId)
+    {
+        return await context.Transactions
+            .Where(t => t.ScopeId == scopeId)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Transaction>> GetFilteredAsync(TransactionFilter filter)
     {
         throw new NotImplementedException();
     }
 
-    public Task SaveChangesAsync()
+    public async Task SaveChangesAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateAsync(Transaction transaction)
+    public async Task UpdateAsync(Transaction transaction)
     {
         throw new NotImplementedException();
     }

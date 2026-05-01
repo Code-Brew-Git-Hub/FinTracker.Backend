@@ -6,33 +6,37 @@ namespace FinTracker.Data.Repositories;
 
 public class ScopeRepository(AppDbContext context) : IScopeRepository
 {
-    public Task AddAsync(Scope entity)
+    public async Task AddAsync(Scope entity)
     {
-        throw new NotImplementedException();
+        context.Scopes.Add(entity);
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var scope = await GetByIdAsync(id);
+        if (scope != null)
+            context.Scopes
+                .Remove(scope);
     }
 
-    public Task<IEnumerable<Scope>> GetAllAsync()
+    public async Task<IEnumerable<Scope>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await context.Scopes
+            .ToListAsync();
     }
 
-    public Task<Scope?> GetByIdAsync(Guid id)
+    public async Task<Scope?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await context.Scopes.FindAsync(id);
     }
 
-    public Task SaveChangesAsync()
+    public async Task SaveChangesAsync()
     {
-        throw new NotImplementedException();
+        await context.SaveChangesAsync();
     }
 
-    public Task UpdateAsync(Scope entity)
+    public async Task UpdateAsync(Scope entity)
     {
-        throw new NotImplementedException();
+        context.Scopes.Update(entity);
     }
 }

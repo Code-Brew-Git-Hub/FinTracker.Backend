@@ -1,41 +1,61 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FinTracker.Data.Services;
-using FinTracker.Domain.Models;
+using FinTracker.Domain.Dtos.Universal;
+using FinTracker.Domain.Dtos.Scopes;
+using MapsterMapper;
 
 namespace FinTracker.API.Controllers;
 
 [ApiController]
 [Route("/api/scopes")]
-public class ScopesController(ITransactionService transactionService, IScopeService scopeService) : ControllerBase
+public class ScopesController(IScopeService scopeService,
+    IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<Scope[]>> GetAll()
+    public async Task<ActionResult<ApiResponse<IEnumerable<ScopeDto>>>> GetAll()
     {
-        throw new NotImplementedException();
+        var scopes = await scopeService.GetAllAsync();
+
+        var scopesDto = mapper.Map<IEnumerable<ScopeDto>>(scopes);
+
+        return Ok(ApiResponse<IEnumerable<ScopeDto>>.Ok(scopesDto));
     }
 
-    [Route("{id}")]
-    [HttpGet]
-    public async Task<ActionResult<Scope>> GetById(int id)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<ApiResponse<ScopeDto>>> GetById([FromRoute] Guid id)
     {
-        throw new NotImplementedException();
+        var scope = await scopeService.GetByIdAsync(id);
+
+        var scopeDto = mapper.Map<ScopeDto>(scope);
+
+        return Ok(ApiResponse<ScopeDto>.Ok(scopeDto));
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create()
+    public async Task<ActionResult<ApiResponse<ScopeDto>>> Create([FromBody] CreateScopeDto dto)
     {
-        throw new NotImplementedException();
+        var createdScope = await scopeService.CreateAsync(dto.Name);
+
+        var createdScopeDto = mapper.Map<ScopeDto>(createdScope);
+
+        return Ok(ApiResponse<ScopeDto>.Ok(createdScopeDto));
     }
 
-    [Route("{id}")]
-    [HttpPut]
-    public async Task<ActionResult> Update(int id)
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<ApiResponse<ScopeDto>>> Update([FromRoute] Guid id, [FromBody] UpdateScopeDto dto)
     {
-        throw new NotImplementedException();
+        var updatedScope = await scopeService.UpdateAsync(id, dto.Name);
+
+        var updatedScopeDto = mapper.Map<ScopeDto>(updatedScope);
+
+        return Ok(ApiResponse<ScopeDto>.Ok(updatedScopeDto));
     }
 
-    [Route("{id}")]
-    [HttpDelete]
-    public async Task<ActionResult> Delete(int id)
-    {  throw new NotImplementedException();}    
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> Delete([FromRoute] Guid id)
+    {
+        await scopeService.DeleteAsync(id);
+
+        return NoContent();
+    }    
 }
