@@ -76,6 +76,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         // TransactionTag
         modelBuilder.Entity<TransactionTag>()
             .HasKey(tt => new { tt.TransactionId, tt.TagId });  // PRIMARY KEY
+        modelBuilder.Entity<TransactionTag>()
+            .HasQueryFilter(tt => !tt.Transaction.IsDeleted);
 
         base.OnModelCreating(modelBuilder);
     }

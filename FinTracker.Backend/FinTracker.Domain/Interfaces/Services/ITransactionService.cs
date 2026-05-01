@@ -11,5 +11,5 @@ public interface ITransactionService
     Task<Transaction> CreateAsync(CreateTransactionDto dto);
     Task<Transaction> UpdateAsync(Guid id, UpdateTransactionDto dto);
     Task DeleteAsync(Guid id);
-    Task BulkUpdateAsync(IEnumerable<Guid> ids, BulkUpdateData data);
+    Task BulkUpdateAsync(BulkUpdateDto dto);
 }

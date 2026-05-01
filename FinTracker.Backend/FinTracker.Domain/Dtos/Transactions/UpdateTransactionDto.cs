@@ -1,6 +1,4 @@
-﻿using FinTracker.Domain.Enums;
-
-namespace FinTracker.Domain.Dtos.Transactions;
+﻿namespace FinTracker.Domain.Dtos.Transactions;
 
 public class UpdateTransactionDto
 {
@@ -9,7 +7,6 @@ public class UpdateTransactionDto
     public DateTime? Date { get; set; }
     public string? Description { get; set; }
     public string? Comment { get; set; }
-    public TransactionType? Type { get; set; }
     public Guid? CategoryId { get; set; }
     public Guid? ScopeId { get; set; }
     public List<Guid>? TagIds { get; set; }

@@ -17,10 +17,8 @@ public class CategoryRepository(AppDbContext context) : ICategoryRepository
     {
         var category = await GetByIdAsync(id);
         if (category != null)
-        {
             context.Categories
                 .Remove(category);
-        }            
     }
 
     public async Task<IEnumerable<Category>> GetAllAsync()

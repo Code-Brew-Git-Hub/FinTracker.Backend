@@ -6,36 +6,94 @@ using FinTracker.Domain.Models.ModelsToHelp;
 
 namespace FinTracker.Data.Services;
 
-public class TransactionService(ITransactionRepository transactionRepository,
-    ICategoryRepository categoryRepository, IScopeRepository scopeRepository) : ITransactionService
+public class TransactionService(ITransactionRepository transactionRepository) : ITransactionService
 {
-    public Task BulkUpdateAsync(IEnumerable<Guid> ids, BulkUpdateData data)
+    public async Task BulkUpdateAsync(BulkUpdateDto dto)
     {
-        throw new NotImplementedException();
+        await transactionRepository.BulkUpdateAsync(dto);
+        await transactionRepository.SaveChangesAsync();
     }
 
-    public Task<Transaction> CreateAsync(CreateTransactionDto dto)
+    public async Task<Transaction> CreateAsync(CreateTransactionDto dto)
     {
-        throw new NotImplementedException();
+        var newId = Guid.NewGuid();
+        var newTransaction = new Transaction()
+        {
+            Id = newId,
+            Amount = dto.Amount,
+            Currency = dto.Currency,
+            Date = dto.Date.ToUniversalTime(),
+            Description = dto.Description,
+            Comment = dto.Comment,
+            Type = dto.Amount < 0 ? TransactionType.Expense : TransactionType.Income,
+            IsDeleted = false,
+            CategoryId = dto.CategoryId,
+            ScopeId = dto.ScopeId,
+            TransactionTags = dto.TagIds.Select(tagId => new TransactionTag
+            {
+                TransactionId = newId,
+                TagId = tagId
+            }).ToList()
+        };
+
+        await transactionRepository.AddAsync(newTransaction);
+        await transactionRepository.SaveChangesAsync();
+        return newTransaction;
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        await transactionRepository.DeleteAsync(id);
+        await transactionRepository.SaveChangesAsync();
     }
 
-    public Task<Transaction> GetByIdAsync(Guid id)
+    public async Task<Transaction> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await transactionRepository.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException($"Transaction {id} not found");
     }
 
-    public Task<Transaction> UpdateAsync(Guid id, UpdateTransactionDto dto)
+    public async Task<Transaction> UpdateAsync(Guid id, UpdateTransactionDto dto)
     {
-        throw new NotImplementedException();
+        var transaction = await transactionRepository.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException($"Transaction {id} not found");
+
+        if (dto.Amount != null)
+        {
+            transaction.Amount = (decimal)dto.Amount;
+            transaction.Type = (decimal)dto.Amount < 0 ? TransactionType.Expense : TransactionType.Income;
+        }
+        if (dto.Currency != null)
+            transaction.Currency = dto.Currency;
+        if (dto.Date != null)
+            transaction.Date = (DateTime)dto.Date;
+        if (dto.Description != null)
+            transaction.Description = dto.Description;
+        if (dto.Comment != null)
+            transaction.Comment = dto.Comment;
+        if (dto.CategoryId != null)
+            transaction.CategoryId = dto.CategoryId.Value;
+        if (dto.ScopeId != null)
+            transaction.ScopeId = dto.ScopeId;
+        if (dto.TagIds != null && dto.TagIds.Any())
+        {
+            transaction.TransactionTags.Clear();
+            transaction.TransactionTags = dto.TagIds
+                .Select(tagId => new TransactionTag
+                {
+                    TransactionId = transaction.Id,
+                    TagId = tagId
+                }).ToList();
+        }
+
+        await transactionRepository.UpdateAsync(transaction);
+        await transactionRepository.SaveChangesAsync();
+
+        return transaction;
     }
 
-    Task<IEnumerable<Transaction>> ITransactionService.GetFilteredAsync(TransactionFilter filter)
+    async Task<IEnumerable<Transaction>> ITransactionService.GetFilteredAsync(TransactionFilter filter)
     {
-        throw new NotImplementedException();
+        return await transactionRepository.GetFilteredAsync(filter);
     }
 }

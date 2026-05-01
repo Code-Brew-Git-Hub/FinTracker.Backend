@@ -16,7 +16,7 @@ namespace FinTracker.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,7 +28,7 @@ namespace FinTracker.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,7 +40,7 @@ namespace FinTracker.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,7 +52,7 @@ namespace FinTracker.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: false),
                     Currency = table.Column<string>(type: "text", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
@@ -82,16 +82,15 @@ namespace FinTracker.Data.Migrations
                 name: "TransactionTags",
                 columns: table => new
                 {
-                    TagId = table.Column<Guid>(type: "uuid", nullable: false),
                     TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TagId1 = table.Column<Guid>(type: "uuid", nullable: false)
+                    TagId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TransactionTags", x => x.TagId);
+                    table.PrimaryKey("PK_TransactionTags", x => new { x.TransactionId, x.TagId });
                     table.ForeignKey(
-                        name: "FK_TransactionTags_Tags_TagId1",
-                        column: x => x.TagId1,
+                        name: "FK_TransactionTags_Tags_TagId",
+                        column: x => x.TagId,
                         principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -132,14 +131,9 @@ namespace FinTracker.Data.Migrations
                 column: "ScopeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TransactionTags_TagId1",
+                name: "IX_TransactionTags_TagId",
                 table: "TransactionTags",
-                column: "TagId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TransactionTags_TransactionId",
-                table: "TransactionTags",
-                column: "TransactionId");
+                column: "TagId");
         }
 
         /// <inheritdoc />

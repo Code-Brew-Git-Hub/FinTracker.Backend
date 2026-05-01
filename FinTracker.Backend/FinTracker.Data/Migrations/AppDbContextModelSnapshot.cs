@@ -3,7 +3,6 @@ using System;
 using FinTracker.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,11 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinTracker.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260430180817_Init")]
-    partial class Init
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +30,8 @@ namespace FinTracker.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
@@ -51,7 +49,8 @@ namespace FinTracker.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
@@ -69,7 +68,8 @@ namespace FinTracker.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
@@ -86,7 +86,8 @@ namespace FinTracker.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("numeric(18,4)");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
@@ -124,21 +125,15 @@ namespace FinTracker.Data.Migrations
 
             modelBuilder.Entity("FinTracker.Domain.Models.TransactionTag", b =>
                 {
-                    b.Property<Guid>("TagId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TagId1")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("TransactionId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("TagId");
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uuid");
 
-                    b.HasIndex("TagId1");
+                    b.HasKey("TransactionId", "TagId");
 
-                    b.HasIndex("TransactionId");
+                    b.HasIndex("TagId");
 
                     b.ToTable("TransactionTags");
                 });
@@ -164,12 +159,12 @@ namespace FinTracker.Data.Migrations
                 {
                     b.HasOne("FinTracker.Domain.Models.Tag", "Tag")
                         .WithMany("TransactionTags")
-                        .HasForeignKey("TagId1")
+                        .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FinTracker.Domain.Models.Transaction", "Transaction")
-                        .WithMany()
+                        .WithMany("TransactionTags")
                         .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -190,6 +185,11 @@ namespace FinTracker.Data.Migrations
                 });
 
             modelBuilder.Entity("FinTracker.Domain.Models.Tag", b =>
+                {
+                    b.Navigation("TransactionTags");
+                });
+
+            modelBuilder.Entity("FinTracker.Domain.Models.Transaction", b =>
                 {
                     b.Navigation("TransactionTags");
                 });

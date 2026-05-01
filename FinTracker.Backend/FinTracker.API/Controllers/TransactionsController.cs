@@ -1,56 +1,71 @@
 ﻿using FinTracker.Data.Services;
 using FinTracker.Domain.Dtos.Transactions;
-using FinTracker.Domain.Interfaces.Services;
-using FinTracker.Domain.Models;
+using FinTracker.Domain.Dtos.Universal;
+using FinTracker.Domain.Models.ModelsToHelp;
+using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinTracker.API.Controllers;
 
 [ApiController]
 [Route("api/transactions")]
-public class TransactionsController(ITransactionService transactionService, IScopeService scopeService,
-    ICategoryService categoryService) : ControllerBase
+public class TransactionsController(ITransactionService transactionService,
+    IMapper mapper) : ControllerBase
 {
     
     [HttpGet]
-    public async Task<ActionResult<TransactionDto[]>> GetAll()
-    { 
-        throw new NotImplementedException();
+    public async Task<ActionResult<ApiResponse<IEnumerable<TransactionDto>>>> GetAll([FromQuery] TransactionFilter filter)
+    {
+        var transactions = await transactionService.GetFilteredAsync(filter);
+
+        var transactionsDto = mapper.Map<IEnumerable<TransactionDto>>(transactions);
+
+        return Ok(ApiResponse<IEnumerable<TransactionDto>>.Ok(transactionsDto));
     }
 
-    [Route("{id}")]
-    [HttpGet]
-    public async Task<ActionResult<TransactionDto>> GetById(Guid id, bool includeDeleted = false)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<ApiResponse<TransactionDto>>> GetById([FromRoute] Guid id)
     {
-        throw new NotImplementedException();
+        var transaction = await transactionService.GetByIdAsync(id);
+
+        var transactionDto = mapper.Map<TransactionDto>(transaction);
+
+        return Ok(ApiResponse<TransactionDto>.Ok(transactionDto));
     }
 
     [HttpPost]
-    public async Task<ActionResult<TransactionDto>> Create(decimal amount, string currency, DateTime date, 
-        string? description, string? comment, string category, string? scope)
+    public async Task<ActionResult<ApiResponse<TransactionDto>>> Create([FromBody] CreateTransactionDto dto)
     {
-        throw new NotImplementedException();
+        var createdTransaction = await transactionService.CreateAsync(dto);
+
+        var createdTransactionDto = mapper.Map<TransactionDto>(createdTransaction);
+
+        return Ok(ApiResponse<TransactionDto>.Ok(createdTransactionDto));
     }
 
-    [Route("{id}")]
-    [HttpPut]
-    public async Task<ActionResult> Update(Guid id, decimal? amount, string? currency, DateTime? date,
-        string? description, string? comment, string? category, string? scope, bool? isDeleted)
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<ApiResponse<TransactionDto>>> Update([FromRoute] Guid id, [FromBody] UpdateTransactionDto dto)
     {
-        throw new NotImplementedException();
+        var updatedTransaction = await transactionService.UpdateAsync(id, dto);
+
+        var updatedTransactionDto = mapper.Map<TransactionDto>(updatedTransaction);
+
+        return Ok(ApiResponse<TransactionDto>.Ok(updatedTransactionDto));
     }
 
-    [Route("{id}")]
-    [HttpDelete]
-    public async Task<ActionResult> SoftDelete(Guid id)
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> SoftDelete([FromRoute] Guid id)
     {
-        throw new NotImplementedException();
+        await transactionService.DeleteAsync(id);
+
+        return NoContent();
     }
 
-    [Route("bulk")]
-    [HttpPatch]
-    public async Task<ActionResult> BulkUpdate()
+    [HttpPatch("bulk")]
+    public async Task<ActionResult> BulkUpdate([FromBody] BulkUpdateDto dto)
     {
-        throw new NotImplementedException();
+        await transactionService.BulkUpdateAsync(dto);
+
+        return NoContent();
     }
 }
