@@ -9,14 +9,14 @@ public class ScopeRepository(AppContext context) : IScopeRepository
     public async Task<Scope?> GetByIdAsync(Guid id)
     {
         return await context.Scopes
-            .AsNoTracking()
+            //.AsNoTracking()
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 
     public async Task<Scope?> GetByNameAsync(string name)
     {
         return await context.Scopes
-            .AsNoTracking()
+            //.AsNoTracking()
             .FirstOrDefaultAsync(s => s.Name == name);
     }
 }

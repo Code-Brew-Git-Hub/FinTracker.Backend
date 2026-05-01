@@ -15,7 +15,7 @@ public class TransactionRepository(AppContext context) : ITransactionRepository
     public async Task<Transaction?> GetByIdAsync(Guid id)
     {
         return await context.Transactions
-            .AsNoTracking()
+            //.AsNoTracking()
             .FirstOrDefaultAsync(t => t.Id == id);
     }
 

@@ -26,10 +26,6 @@ public class TransactionService(ITransactionRepository transactionRepository,
             Scope = scope
         };
 
-        category.Transactions.Add(transaction);
-        if (scope != null)
-            scope.Transactions.Add(transaction);
-
         await transactionRepository.AddAsync(transaction);
     }
 

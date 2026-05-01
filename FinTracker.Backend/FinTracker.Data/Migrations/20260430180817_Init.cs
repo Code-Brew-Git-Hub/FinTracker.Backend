@@ -21,7 +21,6 @@ namespace FinTracker.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
-                    table.UniqueConstraint("AK_Categories_Name", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -34,7 +33,6 @@ namespace FinTracker.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Scopes", x => x.Id);
-                    table.UniqueConstraint("AK_Scopes_Name", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -47,7 +45,6 @@ namespace FinTracker.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tags", x => x.Id);
-                    table.UniqueConstraint("AK_Tags_Name", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,6 +102,24 @@ namespace FinTracker.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Categories_Name",
+                table: "Categories",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Scopes_Name",
+                table: "Scopes",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tags_Name",
+                table: "Tags",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_CategoryId",

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinTracker.Data.Migrations
 {
     [DbContext(typeof(AppContext))]
-    [Migration("20260430144309_Init")]
+    [Migration("20260430180817_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -37,7 +37,8 @@ namespace FinTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Name");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Categories");
                 });
@@ -54,7 +55,8 @@ namespace FinTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Name");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Scopes");
                 });
@@ -71,7 +73,8 @@ namespace FinTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Name");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Tags");
                 });
@@ -166,7 +169,7 @@ namespace FinTracker.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("FinTracker.Domain.Models.Transaction", "Transaction")
-                        .WithMany("TransactionTags")
+                        .WithMany()
                         .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -187,11 +190,6 @@ namespace FinTracker.Data.Migrations
                 });
 
             modelBuilder.Entity("FinTracker.Domain.Models.Tag", b =>
-                {
-                    b.Navigation("TransactionTags");
-                });
-
-            modelBuilder.Entity("FinTracker.Domain.Models.Transaction", b =>
                 {
                     b.Navigation("TransactionTags");
                 });

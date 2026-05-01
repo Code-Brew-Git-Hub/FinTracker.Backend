@@ -34,7 +34,8 @@ namespace FinTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Name");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Categories");
                 });
@@ -51,7 +52,8 @@ namespace FinTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Name");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Scopes");
                 });
@@ -68,7 +70,8 @@ namespace FinTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Name");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Tags");
                 });
@@ -163,7 +166,7 @@ namespace FinTracker.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("FinTracker.Domain.Models.Transaction", "Transaction")
-                        .WithMany("TransactionTags")
+                        .WithMany()
                         .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -184,11 +187,6 @@ namespace FinTracker.Data.Migrations
                 });
 
             modelBuilder.Entity("FinTracker.Domain.Models.Tag", b =>
-                {
-                    b.Navigation("TransactionTags");
-                });
-
-            modelBuilder.Entity("FinTracker.Domain.Models.Transaction", b =>
                 {
                     b.Navigation("TransactionTags");
                 });
