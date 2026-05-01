@@ -3,6 +3,7 @@ using FinTracker.Data.Services;
 using FinTracker.Domain.Dtos.Universal;
 using FinTracker.Domain.Dtos.Scopes;
 using MapsterMapper;
+using FinTracker.Domain.Dtos.Transactions;
 
 namespace FinTracker.API.Controllers;
 
@@ -57,5 +58,15 @@ public class ScopesController(IScopeService scopeService,
         await scopeService.DeleteAsync(id);
 
         return NoContent();
-    }    
+    }
+
+    [HttpGet("{scopeId:guid}/transactions")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<TransactionDto>>>> GetTransactions(Guid scopeId)
+    {
+        var transactions = await scopeService.GetTransactionsAsync(scopeId);
+
+        var transactionsDto = mapper.Map<IEnumerable<TransactionDto>>(transactions);
+
+        return Ok(ApiResponse<IEnumerable<TransactionDto>>.Ok(transactionsDto));
+    }
 }

@@ -1,4 +1,6 @@
 ﻿using FinTracker.Data.Services;
+using FinTracker.Domain.Dtos.Transactions;
+using FinTracker.Domain.Dtos.Universal;
 using FinTracker.Domain.Enums;
 using FinTracker.Parser;
 using Microsoft.AspNetCore.Mvc;
@@ -9,25 +11,23 @@ namespace FinTracker.API.Controllers;
 [Route("api/import")]
 public class ImportController(ITransactionService transactionService, IScopeService scopeService) : ControllerBase
 {
-
-    [Route("csv")]
-    [HttpPost]
-    public async Task<ActionResult> UploadCsv(IFormFile file)
+    [HttpPost("csv")]
+    public async Task<ActionResult<ApiResponse<TransactionDto>>> UploadCsv(IFormFile file)
     {
-        throw new NotImplementedException();
-
         if (file is null || file.Length == 0)
-            return BadRequest("Файл не передан или пуст.");
+            return BadRequest(ApiResponse<TransactionDto>.Fail("The file has not been transferred or is empty"));
 
         var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
         if (extension is not ".csv")
-            return BadRequest("Допустимый формат файла: .csv");
-
+            return BadRequest(ApiResponse<TransactionDto>.Fail("Incorrect file: The acceptable file format is .csv"));
+        
         using var stream = file.OpenReadStream();
         using var reader = new StreamReader(stream);
 
-        var parser = new TransactionParser();
-        var transactions = await parser.Parse(reader, file.FileName);
+        var parser = new CsvParser();
+        var transactions = await parser.ParseCSV(reader);
+
+        throw new NotImplementedException();
 
         foreach (var transaction in transactions)
         {
