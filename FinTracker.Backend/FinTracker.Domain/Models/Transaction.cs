@@ -21,7 +21,8 @@ public class Transaction
     // Navigation
     public Category Category { get; set; }  // Категория
     public Scope? Scope { get; set; }  // Группа    
-    //public ICollection<TransactionTag> TransactionTags { get; set; } = [];  // Теги
+    public ICollection<TransactionTag> TransactionTags { get; set; } = [];  // Теги
+
     /*
      * public ICollection<TransactionLinkEntry> LinkEntries { get; set; } = [];  // 
      * public ICollection<TransactionItem> Items { get; set; } = [];  // Элементы транзакции (хлеб, колбаса, вода)

@@ -8,51 +8,44 @@ public class CategoryService(ICategoryRepository categoryRepository) : ICategory
 {
     public async Task<Category> CreateAsync(string name)
     {
-        var category = new Category()
+        var newCategory = new Category()
         {
             Id = Guid.NewGuid(),
             Name = name
         };
 
-        await categoryRepository.CreateAsync(category);
+        await categoryRepository.AddAsync(newCategory);
+        await categoryRepository.SaveChangesAsync();
 
-        return category;
+        return newCategory;
     }
 
-    public async Task<bool> DeleteByIdAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        var category = await categoryRepository.GetByIdAsync(id);
-        if(category == null)
-            return false;
-        categoryRepository.Delete(category);
-        return true;
+        await categoryRepository.DeleteAsync(id);
+        await categoryRepository.SaveChangesAsync();
     }
 
-    public async Task<Category[]> GetAllAsync()
+    public async Task<IEnumerable<Category>> GetAllAsync()
     {
         return await categoryRepository.GetAllAsync();
     }
 
-    public async Task<Category?> GetByIdAsync(Guid id)
+    public async Task<Category> GetByIdAsync(Guid id)
     {
-        return await categoryRepository.GetByIdAsync(id);
+        return await categoryRepository.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException($"Category {id} not found");
     }
 
-    public async Task<Category?> GetByNameAsync(string name)
+    public async Task<Category> UpdateAsync(Guid id, string name)
     {
-        return await categoryRepository.GetByNameAsync(name);
-    }
+        var entity = await categoryRepository.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException($"Category {id} not found");
 
-    public async Task<bool> IsUniqueNameAsync(string name)
-    {
-        return await categoryRepository.IsUniqueNameAsync(name);
-    }
+        entity.Name = name;
+        await categoryRepository.UpdateAsync(entity);
+        await categoryRepository.SaveChangesAsync();
 
-    public async Task<bool> UpdateAsync(Category newCategory)
-    {
-        var isUnique = await categoryRepository.IsUniqueNameAsync(newCategory.Name);
-        if (isUnique)
-            await categoryRepository.UpdateAsync(newCategory);
-        return isUnique;
+        return entity;
     }
 }

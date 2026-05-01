@@ -3,7 +3,7 @@ using FinTracker.Domain.Models;
 
 namespace FinTracker.Data;
 
-public class AppContext(DbContextOptions<AppContext> options) : DbContext(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Category> Categories { get; set; }

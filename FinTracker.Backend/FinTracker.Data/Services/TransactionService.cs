@@ -1,49 +1,41 @@
-﻿using FinTracker.Domain.Enums;
+﻿using FinTracker.Domain.Dtos.Transactions;
+using FinTracker.Domain.Enums;
 using FinTracker.Domain.Interfaces.Repositories;
 using FinTracker.Domain.Models;
+using FinTracker.Domain.Models.ModelsToHelp;
 
 namespace FinTracker.Data.Services;
 
-public class TransactionService(ITransactionRepository transactionRepository, 
+public class TransactionService(ITransactionRepository transactionRepository,
     ICategoryRepository categoryRepository, IScopeRepository scopeRepository) : ITransactionService
 {
-    public async Task CreateAsync(decimal amount, string currency, DateTime date, string? description, 
-        string? comment, Category category, Scope? scope, CancellationToken cancellationToken = default)
+    public Task BulkUpdateAsync(IEnumerable<Guid> ids, BulkUpdateData data)
     {
-        var transaction = new Transaction()
-        {
-            Id = Guid.NewGuid(),
-            Amount = amount,
-            Currency = currency,
-            Date = date.ToUniversalTime(),
-            Description = description,
-            Comment = comment,
-            Type = amount < 0 ? TransactionType.Expense : TransactionType.Income,
-            IsDeleted = false,
-            CategoryId = category.Id,
-            ScopeId = scope?.Id,
-            Category = category,
-            Scope = scope
-        };
-
-        await transactionRepository.AddAsync(transaction);
+        throw new NotImplementedException();
     }
 
-    public async Task<Transaction?> GetByIdAsync(Guid id)
+    public Task<Transaction> CreateAsync(CreateTransactionDto dto)
     {
-        var transaction =  await transactionRepository.GetByIdAsync(id);
-
-        transaction?.Category = await categoryRepository.GetByIdAsync(transaction.CategoryId) 
-            ?? throw new Exception("В транзакции не была указана категория");
-
-        if (transaction != null && transaction.ScopeId is not null)
-            transaction.Scope = await scopeRepository.GetByIdAsync((Guid)transaction.ScopeId);
-
-        return transaction;
+        throw new NotImplementedException();
     }
 
-    public async Task UpdateAsync(Transaction transaction)
+    public Task DeleteAsync(Guid id)
     {
-        await transactionRepository.UpdateAsync(transaction);
+        throw new NotImplementedException();
+    }
+
+    public Task<Transaction> GetByIdAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Transaction> UpdateAsync(Guid id, UpdateTransactionDto dto)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<IEnumerable<Transaction>> ITransactionService.GetFilteredAsync(TransactionFilter filter)
+    {
+        throw new NotImplementedException();
     }
 }

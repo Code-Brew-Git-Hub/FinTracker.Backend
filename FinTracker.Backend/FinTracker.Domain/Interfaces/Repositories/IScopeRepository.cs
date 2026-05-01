@@ -2,8 +2,7 @@
 
 namespace FinTracker.Domain.Interfaces.Repositories;
 
-public interface IScopeRepository
+public interface IScopeRepository : IRepository<Scope>
 {
-    Task<Scope?> GetByIdAsync(Guid id);
-    Task<Scope?> GetByNameAsync(string name);
+
 }

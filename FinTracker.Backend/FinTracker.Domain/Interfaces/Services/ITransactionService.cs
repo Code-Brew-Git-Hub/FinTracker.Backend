@@ -1,14 +1,15 @@
-﻿using FinTracker.Domain.Models;
+﻿using FinTracker.Domain.Dtos.Transactions;
+using FinTracker.Domain.Models;
+using FinTracker.Domain.Models.ModelsToHelp;
 
 namespace FinTracker.Data.Services;
 
 public interface ITransactionService
 {
-    Task CreateAsync(decimal amount, string currency, DateTime date, string? description, 
-        string? comment, Category category, Scope? scope,
-        CancellationToken cancellationToken = default);
-
-    Task<Transaction?> GetByIdAsync(Guid id);
-
-    Task UpdateAsync(Transaction transaction);
+    Task<Transaction> GetByIdAsync(Guid id);
+    Task<IEnumerable<Transaction>> GetFilteredAsync(TransactionFilter filter);
+    Task<Transaction> CreateAsync(CreateTransactionDto dto);
+    Task<Transaction> UpdateAsync(Guid id, UpdateTransactionDto dto);
+    Task DeleteAsync(Guid id);
+    Task BulkUpdateAsync(IEnumerable<Guid> ids, BulkUpdateData data);
 }

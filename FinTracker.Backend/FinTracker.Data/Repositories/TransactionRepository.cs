@@ -1,28 +1,49 @@
 ﻿using FinTracker.Domain.Interfaces.Repositories;
 using FinTracker.Domain.Models;
+using FinTracker.Domain.Models.ModelsToHelp;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinTracker.Data.Repositories;
 
-public class TransactionRepository(AppContext context) : ITransactionRepository
+public class TransactionRepository(AppDbContext context) : ITransactionRepository
 {
-    public async Task AddAsync(Transaction transaction, CancellationToken cancellationToken = default)
+    public Task AddAsync(Transaction entity)
     {
-        await context.Transactions.AddAsync(transaction, cancellationToken);
-        await context.SaveChangesAsync();
+        throw new NotImplementedException();
     }
 
-    public async Task<Transaction?> GetByIdAsync(Guid id)
+    public Task BulkUpdateAsync(IEnumerable<Guid> ids, BulkUpdateData data)
     {
-        return await context.Transactions
-            //.AsNoTracking()
-            .FirstOrDefaultAsync(t => t.Id == id);
+        throw new NotImplementedException();
     }
 
-    public async Task UpdateAsync(Transaction transaction)
+    public Task DeleteAsync(Guid id)
     {
-        context.Transactions.Attach(transaction);
-        context.Entry(transaction).State = EntityState.Modified;
-        await context.SaveChangesAsync();
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<Transaction>> GetAllAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Transaction?> GetByIdAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<Transaction>> GetFilteredAsync(TransactionFilter filter)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task SaveChangesAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateAsync(Transaction transaction)
+    {
+        throw new NotImplementedException();
     }
 }

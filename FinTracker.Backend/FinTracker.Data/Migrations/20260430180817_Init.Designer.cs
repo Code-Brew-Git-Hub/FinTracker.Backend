@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FinTracker.Data.Migrations
 {
-    [DbContext(typeof(AppContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20260430180817_Init")]
     partial class Init
     {

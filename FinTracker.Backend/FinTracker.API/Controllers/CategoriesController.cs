@@ -1,71 +1,61 @@
-﻿using FinTracker.Domain.Interfaces.Services;
-using FinTracker.Domain.ModelsToPrint;
+﻿using FinTracker.Domain.Dtos.Categories;
+using FinTracker.Domain.Dtos.Universal;
+using FinTracker.Domain.Interfaces.Services;
+using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinTracker.API.Controllers;
 
 [ApiController]
 [Route("api/categories")]
-public class CategoriesController(ICategoryService categoryService) : ControllerBase
+public class CategoriesController(ICategoryService categoryService,
+    IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<CategoryToPrint[]>> GetAll()
-    {   
+    public async Task<ActionResult<ApiResponse<IEnumerable<CategoryDto>>>> GetAll()
+    {
         var categories = await categoryService.GetAllAsync();
-        var result = new CategoryToPrint[categories.Length];
-        for (int i = 0; i < categories.Length; i++)
-            result[i] = new CategoryToPrint(categories[i]);
 
-        return result;
+        var dto = mapper.Map<IEnumerable<CategoryDto>>(categories);
+
+        return Ok(ApiResponse<IEnumerable<CategoryDto>>.Ok(dto));
     }
 
-    [Route("{id}")]
-    [HttpGet]
-    public async Task<ActionResult<CategoryToPrint>> GetById(Guid id)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<ApiResponse<CategoryDto>>> GetById([FromRoute] Guid id)
     {
         var category = await categoryService.GetByIdAsync(id);
-        if (category == null)
-            return NotFound();
 
-        return Ok(new CategoryToPrint(category));
+        var dto = mapper.Map<CategoryDto>(category);
+
+        return Ok(ApiResponse<CategoryDto>.Ok(dto));
     }
 
     [HttpPost]
-    public async Task<ActionResult<CategoryToPrint>> Create(string name)
+    public async Task<ActionResult<ApiResponse<CategoryDto>>> Create([FromBody] CreateCategoryDto dto)
     {
-        if (!await categoryService.IsUniqueNameAsync(name))
-            return BadRequest("Ошибка: Такая категория уже существует");
+        var createdCategory = await categoryService.CreateAsync(dto.Name);
 
-        var createdCategory = await categoryService.CreateAsync(name);
-        return Ok(new CategoryToPrint(createdCategory));
+        var catDto = mapper.Map<CategoryDto>(createdCategory);
+
+        return Ok(ApiResponse<CategoryDto>.Ok(catDto));
     }
 
-    [Route("{id}")]
-    [HttpPut]
-    public async Task<ActionResult<CategoryToPrint>> Update(Guid id, string name)
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<ApiResponse<CategoryDto>>> Update([FromRoute] Guid id, [FromBody] UpdateCategoryDto dto)
     {
-        var category = await categoryService.GetByIdAsync(id);
 
-        if (category == null)
-            return NotFound($"Категория с id {id} не найдена");
+        var updatedCategory = await categoryService.UpdateAsync(id, dto.Name);
 
-        category.Name = name;
+        var catDto = mapper.Map<CategoryDto>(updatedCategory);
 
-        var success = await categoryService.UpdateAsync(category);
-
-        if (success)
-            return Ok(new CategoryToPrint(category));
-        else
-            return BadRequest($"Категория с названием {name} уже существует");
+        return Ok(ApiResponse<CategoryDto>.Ok(catDto));
     }
 
-    [Route("{id}")]
-    [HttpDelete]
-    public async Task<ActionResult> Delete(Guid id)
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> Delete([FromRoute] Guid id)
     {
-        var success = await categoryService.DeleteByIdAsync(id);
-        if (!success)
-            return NotFound($"Категории с id {id} не найдено");
-        return Ok();
+        await categoryService.DeleteAsync(id);
+        return NoContent();
     }
 }

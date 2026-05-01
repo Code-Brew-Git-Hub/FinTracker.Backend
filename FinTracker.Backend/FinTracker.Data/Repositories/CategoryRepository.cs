@@ -5,50 +5,43 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinTracker.Data.Repositories;
 
-public class CategoryRepository(AppContext context) : ICategoryRepository
+public class CategoryRepository(AppDbContext context) : ICategoryRepository
 {
-    public async Task CreateAsync(Category category)
+    public async Task AddAsync(Category entity)
     {
-        await context.Categories.AddAsync(category);
-        await context.SaveChangesAsync();
+        await context.Categories
+            .AddAsync(entity);
     }
 
-    public void Delete(Category category)
+    public async Task DeleteAsync(Guid id)
     {
-        context.Categories.Remove(category);
+        var category = await GetByIdAsync(id);
+        if (category != null)
+        {
+            context.Categories
+                .Remove(category);
+        }            
     }
 
-    public async Task<Category[]> GetAllAsync()
+    public async Task<IEnumerable<Category>> GetAllAsync()
     {
         return await context.Categories
-            .AsNoTracking()
-            .ToArrayAsync();
+            .ToListAsync();            
     }
 
     public async Task<Category?> GetByIdAsync(Guid id)
     {
-        var category = await context.Categories
-            //.AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == id);
-        return category;
-    }
-
-    public async Task<Category?> GetByNameAsync(string name)
-    {
         return await context.Categories
-            //.AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Name == name);
+            .FindAsync(id);
     }
 
-    public async Task<bool> IsUniqueNameAsync(string name)
+    public async Task SaveChangesAsync()
     {
-        return !await context.Categories.AnyAsync(c => c.Name == name);
-    }
-
-    public async Task UpdateAsync(Category category)
-    {
-        context.Categories.Attach(category);
-        context.Entry(category).State = EntityState.Modified;
         await context.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(Category entity)
+    {
+        context.Categories.Update(entity);
     }
 }

@@ -4,5 +4,10 @@ namespace FinTracker.Data.Services;
 
 public interface IScopeService
 {
-    Task<Scope?> GetByNameAsync(string name);
+    Task<IEnumerable<Scope>> GetAllAsync();
+    Task<Scope> GetByIdAsync(Guid id);
+    Task<Scope> CreateAsync(string name);
+    Task<Scope> UpdateAsync(Guid id, string name);
+    Task DeleteAsync(Guid id);
+    Task<IEnumerable<Transaction>> GetTransactionsAsync(Guid scopeId);
 }

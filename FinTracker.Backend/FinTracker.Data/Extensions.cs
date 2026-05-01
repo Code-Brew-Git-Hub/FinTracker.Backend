@@ -16,7 +16,7 @@ public static class Extensions
         var Username = Environment.GetEnvironmentVariable("DBUSERNAME") ?? "postgres";
         var Password = Environment.GetEnvironmentVariable("PASSWORD") ?? "123456";
 
-        serviceCollection.AddDbContext<AppContext>(x =>
+        serviceCollection.AddDbContext<AppDbContext>(x =>
         {
             x.UseNpgsql($"Host={DbHost};Database={Database};Username={Username};Password={Password}");
         });
