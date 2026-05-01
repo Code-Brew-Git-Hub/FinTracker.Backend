@@ -8,7 +8,7 @@ namespace FinTracker.API;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +37,7 @@ public class Program
         using (var scope = app.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.Database.MigrateAsync();
+            await db.Database.MigrateAsync();
         }
 
         // Обработка ошибок
