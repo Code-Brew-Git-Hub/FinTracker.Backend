@@ -11,14 +11,15 @@ public static class Extensions
 {
     public static IServiceCollection AddContext(this IServiceCollection serviceCollection)
     {
-        var DbHost = Environment.GetEnvironmentVariable("DBHOST") ?? "localhost";
-        var Database = Environment.GetEnvironmentVariable("DATABASE") ?? "FinTrackerDb";
-        var Username = Environment.GetEnvironmentVariable("DBUSERNAME") ?? "postgres";
-        var Password = Environment.GetEnvironmentVariable("PASSWORD") ?? "123456";
+        var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+        var dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+        var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "FinTrackerDb";
+        var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
+        var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "123456";
 
         serviceCollection.AddDbContext<AppDbContext>(x =>
         {
-            x.UseNpgsql($"Host={DbHost};Database={Database};Username={Username};Password={Password}");
+            x.UseNpgsql($"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPassword}");
         });
 
         return serviceCollection;
