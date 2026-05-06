@@ -78,10 +78,18 @@ public class TransactionRepository(AppDbContext context) : ITransactionRepositor
             .ToListAsync();
     }
 
+    public async Task<Transaction?> GetByIdAsync(Guid id, bool includeDeleted)
+    {
+        var transaction = await context.Transactions
+            .FindAsync(id);
+        if (transaction == null)
+            return null;
+        return (includeDeleted || !transaction.IsDeleted) ? transaction : null;
+    }
+
     public async Task<Transaction?> GetByIdAsync(Guid id)
     {
-        return await context.Transactions
-            .FindAsync(id);
+        return await GetByIdAsync(id, true);
     }
 
     public async Task<IEnumerable<Transaction>> GetByScopeIdAsync(Guid scopeId)
@@ -91,7 +99,7 @@ public class TransactionRepository(AppDbContext context) : ITransactionRepositor
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Transaction>> GetFilteredAsync(TransactionFilter filter)
+    public async Task<IEnumerable<Transaction>> GetFilteredAsync(TransactionFilter filter, bool includeDeleted)
     {
         var query = context.Transactions
         .Include(t => t.Category)
@@ -124,13 +132,17 @@ public class TransactionRepository(AppDbContext context) : ITransactionRepositor
         if (filter.ExcludeScopes)
             query = query.Where(t => t.ScopeId == null);
 
+        if (filter.TagIds != null && filter.TagIds.Any())
+            query = query.Where(t => t.TransactionTags
+                                      .Any(tt => filter.TagIds.Contains(tt.TagId)));
+
         if (!string.IsNullOrEmpty(filter.Search))
             query = query.Where(t => t.Description != null &&
                                      t.Description.Contains(filter.Search));  // Подумать что еще сюда добавить
 
-        if (filter.TagIds != null && filter.TagIds.Any())
-            query = query.Where(t => t.TransactionTags
-                                      .Any(tt => filter.TagIds.Contains(tt.TagId)));
+        if (!includeDeleted)
+            query = query.Where(t => !t.IsDeleted);
+
 
         // Пагинация
         query = query

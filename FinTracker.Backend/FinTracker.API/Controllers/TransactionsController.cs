@@ -14,9 +14,9 @@ public class TransactionsController(ITransactionService transactionService,
 {
     
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<TransactionDto>>>> GetAll([FromQuery] TransactionFilter filter)
+    public async Task<ActionResult<ApiResponse<IEnumerable<TransactionDto>>>> GetAll([FromQuery] TransactionFilter filter, [FromQuery] bool includeDeleted=false)
     {
-        var transactions = await transactionService.GetFilteredAsync(filter);
+        var transactions = await transactionService.GetFilteredAsync(filter, includeDeleted);
 
         var transactionsDto = mapper.Map<IEnumerable<TransactionDto>>(transactions);
 
@@ -24,9 +24,9 @@ public class TransactionsController(ITransactionService transactionService,
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<ApiResponse<TransactionDto>>> GetById([FromRoute] Guid id)
+    public async Task<ActionResult<ApiResponse<TransactionDto>>> GetById([FromRoute] Guid id, [FromQuery] bool includeDeleted = false)
     {
-        var transaction = await transactionService.GetByIdAsync(id);
+        var transaction = await transactionService.GetByIdAsync(id, includeDeleted);
 
         var transactionDto = mapper.Map<TransactionDto>(transaction);
 
@@ -56,7 +56,7 @@ public class TransactionsController(ITransactionService transactionService,
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> SoftDelete([FromRoute] Guid id)
     {
-        await transactionService.DeleteAsync(id);
+        await transactionService.SoftDeleteAsync(id);
 
         return NoContent();
     }

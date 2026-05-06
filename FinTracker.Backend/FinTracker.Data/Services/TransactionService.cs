@@ -47,9 +47,9 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
         await transactionRepository.SaveChangesAsync();
     }
 
-    public async Task<Transaction> GetByIdAsync(Guid id)
+    public async Task<Transaction> GetByIdAsync(Guid id, bool includeDeleted)
     {
-        return await transactionRepository.GetByIdAsync(id)
+        return await transactionRepository.GetByIdAsync(id, includeDeleted)
             ?? throw new KeyNotFoundException($"Transaction {id} not found");
     }
 
@@ -92,8 +92,18 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
         return transaction;
     }
 
-    async Task<IEnumerable<Transaction>> ITransactionService.GetFilteredAsync(TransactionFilter filter)
+    public async Task<IEnumerable<Transaction>> GetFilteredAsync(TransactionFilter filter, bool includeDeleted)
     {
-        return await transactionRepository.GetFilteredAsync(filter);
+        return await transactionRepository.GetFilteredAsync(filter, includeDeleted);
+    }
+
+    public async Task SoftDeleteAsync(Guid id)
+    {
+        var transaction = await transactionRepository.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException($"Transaction {id} not found");
+        transaction.IsDeleted = true;
+
+        await transactionRepository.UpdateAsync(transaction);
+        await transactionRepository.SaveChangesAsync();
     }
 }

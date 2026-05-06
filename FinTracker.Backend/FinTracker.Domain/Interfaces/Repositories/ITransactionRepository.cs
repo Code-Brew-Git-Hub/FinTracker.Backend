@@ -6,7 +6,8 @@ namespace FinTracker.Domain.Interfaces.Repositories;
 
 public interface ITransactionRepository : IRepository<Transaction>
 {
-    Task<IEnumerable<Transaction>> GetFilteredAsync(TransactionFilter filter);
+    Task<Transaction?> GetByIdAsync(Guid id, bool includeDeleted);
+    Task<IEnumerable<Transaction>> GetFilteredAsync(TransactionFilter filter, bool includeDeleted);
     Task BulkUpdateAsync(BulkUpdateDto dto);
     Task<IEnumerable<Transaction>> GetByScopeIdAsync(Guid scopeId);
 }

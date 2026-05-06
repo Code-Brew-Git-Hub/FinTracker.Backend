@@ -34,8 +34,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Transaction>()
             .Property(t => t.CategoryId)
             .IsRequired();  // NOT NULL
-        modelBuilder.Entity<Transaction>()
-            .HasQueryFilter(t => !t.IsDeleted);
+        //modelBuilder.Entity<Transaction>()
+        //    .HasQueryFilter(t => !t.IsDeleted);
         modelBuilder.Entity<Transaction>()
             .Property(t => t.Amount)
             .HasPrecision(18, 4);
@@ -76,8 +76,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         // TransactionTag
         modelBuilder.Entity<TransactionTag>()
             .HasKey(tt => new { tt.TransactionId, tt.TagId });  // PRIMARY KEY
-        modelBuilder.Entity<TransactionTag>()
-            .HasQueryFilter(tt => !tt.Transaction.IsDeleted);
+        //modelBuilder.Entity<TransactionTag>()
+        //    .HasQueryFilter(tt => !tt.Transaction.IsDeleted);
 
         base.OnModelCreating(modelBuilder);
     }
