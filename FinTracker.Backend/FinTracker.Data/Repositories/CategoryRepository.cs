@@ -33,6 +33,12 @@ public class CategoryRepository(AppDbContext context) : ICategoryRepository
             .FindAsync(id);
     }
 
+    public async Task<Category?> GetByNameAsync(string name)
+    {
+        return await context.Categories
+            .FirstOrDefaultAsync(category => category.Name == name);
+    }
+
     public async Task SaveChangesAsync()
     {
         await context.SaveChangesAsync();

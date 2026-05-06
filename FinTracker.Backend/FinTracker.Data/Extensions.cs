@@ -4,6 +4,7 @@ using FinTracker.Data.Repositories;
 using FinTracker.Data.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using FinTracker.Parser;
 
 namespace FinTracker.Data;
 
@@ -41,6 +42,15 @@ public static class Extensions
         serviceCollection.AddScoped<IScopeService, ScopeService>();
         serviceCollection.AddScoped<ICategoryService, CategoryService>();
         serviceCollection.AddScoped<ITagService, TagService>();
+        serviceCollection.AddScoped<IImportService, ImportService>();
+
+        return serviceCollection;
+    }
+
+    public static IServiceCollection AddParser(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddScoped<TransactionParser>();
+        serviceCollection.AddScoped<CsvParser>();
 
         return serviceCollection;
     }

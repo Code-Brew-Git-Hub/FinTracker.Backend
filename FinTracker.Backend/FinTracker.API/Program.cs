@@ -14,6 +14,7 @@ public class Program
 
         builder.Services.AddRepositories();
         builder.Services.AddServices();
+        builder.Services.AddParser();
         builder.Services.AddContext();
         MappingConfig.Configure();
         builder.Services.AddMapster();
