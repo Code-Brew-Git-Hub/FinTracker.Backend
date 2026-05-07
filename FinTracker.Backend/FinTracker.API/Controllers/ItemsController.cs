@@ -1,6 +1,7 @@
 ﻿using FinTracker.Domain.Dtos.TransactionItems;
 using FinTracker.Domain.Dtos.Universal;
 using FinTracker.Domain.Interfaces.Services;
+using FinTracker.Domain.Models;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,24 +15,38 @@ public class ItemsController(IItemService itemService,
     [HttpGet]
     public async Task<ActionResult<ApiResponse<IEnumerable<TransactionItemDto>>>> GetAll([FromRoute] Guid transactionId)
     {
-        throw new NotImplementedException();
+        var items = await itemService.GetAllAsync(transactionId);
+
+        var itemsDto = mapper.Map<IEnumerable<TransactionItemDto>>(items);
+
+        return Ok(ApiResponse<IEnumerable<TransactionItemDto>>.Ok(itemsDto));
     }
 
     [HttpPost]
     public async Task<ActionResult<ApiResponse<TransactionItemDto>>> Create([FromRoute] Guid transactionId, [FromBody] CreateTransactionItemDto dto)
     {
-        throw new NotImplementedException();
+        var createdItem = await itemService.CreateAsync(transactionId, dto);
+
+        var createdItemDto = mapper.Map<TransactionItemDto>(createdItem);
+
+        return Ok(ApiResponse<TransactionItemDto>.Ok(createdItemDto));
     }
 
     [HttpPut("{itemId:guid}")]
     public async Task<ActionResult<ApiResponse<TransactionItemDto>>> Update([FromRoute] Guid transactionId, [FromRoute] Guid itemId, [FromBody] UpdateTransactionItemDto dto)
     {
-        throw new NotImplementedException();
+        var updatedItem = await itemService.UpdateAsync(transactionId, itemId, dto);
+
+        var updatedItemDto = mapper.Map<TransactionItemDto>(updatedItem);
+
+        return Ok(ApiResponse<TransactionItemDto>.Ok(updatedItemDto));
     }
 
     [HttpDelete("{itemId:guid}")]
     public async Task<ActionResult> Delete([FromRoute] Guid transactionId, [FromRoute] Guid itemId)
     {
-        throw new NotImplementedException();
+        await itemService.DeleteAsync(transactionId, itemId);
+
+        return NoContent();
     }
 }

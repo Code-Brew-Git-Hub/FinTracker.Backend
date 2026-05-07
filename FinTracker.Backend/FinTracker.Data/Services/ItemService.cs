@@ -1,28 +1,98 @@
 ﻿using FinTracker.Domain.Dtos.TransactionItems;
+using FinTracker.Domain.Interfaces.Repositories;
 using FinTracker.Domain.Interfaces.Services;
 using FinTracker.Domain.Models;
 
 namespace FinTracker.Data.Services;
 
-public class ItemService : IItemService
+public class ItemService(IItemRepository itemRepository, ITransactionRepository transactionRepository) : IItemService
 {
-    public Task<TransactionItem> CreateAsync(Guid transactionId, CreateTransactionItemDto dto)
+    public async Task<TransactionItem> CreateAsync(Guid transactionId, CreateTransactionItemDto dto)
     {
-        throw new NotImplementedException();
+        _ = await transactionRepository.GetByIdAsync(transactionId)
+            ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
+
+        await ValidateTotalAmount(transactionId, dto.Amount);
+
+        var item = new TransactionItem
+        {
+            Id = Guid.NewGuid(),
+            Name = dto.Name,
+            Amount = dto.Amount,
+            TransactionId = transactionId,
+            CategoryId = dto.CategoryId
+        };
+
+        await itemRepository.AddAsync(item);
+        await itemRepository.SaveChangesAsync();
+
+        return item;
     }
 
-    public Task DeleteAsync(Guid transactionId, Guid itemId)
+    public async Task DeleteAsync(Guid transactionId, Guid itemId)
     {
-        throw new NotImplementedException();
+        var item = await itemRepository.GetByIdAsync(itemId)
+            ?? throw new KeyNotFoundException($"Item {itemId} not found");
+
+        if (item.TransactionId != transactionId)
+            throw new ArgumentException($"Item {itemId} does not belong to transaction {transactionId}");
+
+        await itemRepository.DeleteAsync(itemId);
+        await itemRepository.SaveChangesAsync();
     }
 
-    public Task<IEnumerable<TransactionItem>> GetAllAsync(Guid transactionId)
+    public async Task<IEnumerable<TransactionItem>> GetAllAsync(Guid transactionId)
     {
-        throw new NotImplementedException();
+        _ = await transactionRepository.GetByIdAsync(transactionId)
+            ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
+
+        return await itemRepository.GetAllByTransactionIdAsync(transactionId);
     }
 
-    public Task<TransactionItem> UpdateAsync(Guid transactionId, Guid itemId, UpdateTransactionItemDto dto)
+    public async Task<TransactionItem> UpdateAsync(Guid transactionId, Guid itemId, UpdateTransactionItemDto dto)
     {
-        throw new NotImplementedException();
+        _ = await transactionRepository.GetByIdAsync(transactionId)
+            ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
+
+        var item = await itemRepository.GetByIdAsync(itemId)
+            ?? throw new KeyNotFoundException($"Item {itemId} not found");
+
+        // Проверяем что позиция принадлежит этой транзакции
+        if (item.TransactionId != transactionId)
+            throw new ArgumentException($"Item {itemId} does not belong to transaction {transactionId}");
+
+        if (dto.Name != null)
+            item.Name = dto.Name;
+
+        if (dto.Amount != null)
+        {
+            await ValidateTotalAmount(transactionId, dto.Amount.Value, excludeItemId: itemId);
+            item.Amount = dto.Amount.Value;
+        }
+
+        if (dto.CategoryId != null)
+            item.CategoryId = dto.CategoryId;
+
+        await itemRepository.UpdateAsync(item);
+        await itemRepository.SaveChangesAsync();
+
+        return item;
+    }
+
+    private async Task ValidateTotalAmount(Guid transactionId, decimal newItemAmount, Guid? excludeItemId = null)
+    {
+        var transaction = await transactionRepository.GetByIdAsync(transactionId)
+            ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
+
+        var existingItems = await itemRepository.GetAllByTransactionIdAsync(transactionId);
+
+        // При обновлении исключаем старую сумму редактируемого item
+        var currentTotal = existingItems
+            .Where(i => i.Id != excludeItemId)
+            .Sum(i => i.Amount);
+
+        if (currentTotal + newItemAmount > Math.Abs(transaction.Amount))
+            throw new ArgumentException(
+                $"Сумма позиций ({currentTotal + newItemAmount}) превышает сумму транзакции ({Math.Abs(transaction.Amount)})");
     }
 }

@@ -1,42 +1,48 @@
 ﻿using FinTracker.Domain.Interfaces.Repositories;
 using FinTracker.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinTracker.Data.Repositories;
 
-public class ItemRepository : IItemRepository
+public class ItemRepository(AppDbContext context) : IItemRepository
 {
-    public Task AddAsync(TransactionItem entity)
+    public async Task AddAsync(TransactionItem entity)
     {
-        throw new NotImplementedException();
+        await context.TransactionItems.AddAsync(entity);
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var item = await GetByIdAsync(id);
+        if (item != null)
+            context.TransactionItems.Remove(item);
     }
 
-    public Task<IEnumerable<TransactionItem>> GetAllAsync()
+    public async Task<IEnumerable<TransactionItem>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await context.TransactionItems.ToListAsync();
     }
 
-    public Task<IEnumerable<TransactionItem>> GetAllByTransactionIdAsync(Guid transactionId)
+    public async Task<IEnumerable<TransactionItem>> GetAllByTransactionIdAsync(Guid transactionId)
     {
-        throw new NotImplementedException();
+        return await context.TransactionItems
+            .Include(ti => ti.Category)
+            .Where(ti => ti.TransactionId == transactionId)
+            .ToListAsync();
     }
 
-    public Task<TransactionItem?> GetByIdAsync(Guid id)
+    public async Task<TransactionItem?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await context.TransactionItems.FindAsync(id);
     }
 
-    public Task SaveChangesAsync()
+    public async Task SaveChangesAsync()
     {
-        throw new NotImplementedException();
+        await context.SaveChangesAsync();
     }
 
-    public Task UpdateAsync(TransactionItem entity)
+    public async Task UpdateAsync(TransactionItem entity)
     {
-        throw new NotImplementedException();
+        context.TransactionItems.Update(entity);
     }
 }
