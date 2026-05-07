@@ -3,6 +3,7 @@ using System;
 using FinTracker.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinTracker.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260507032746_Add TransactionItem and TransactionLink")]
+    partial class AddTransactionItemandTransactionLink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,9 +180,14 @@ namespace FinTracker.Data.Migrations
                     b.Property<Guid>("TransactionId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("TransactionId1")
+                        .HasColumnType("uuid");
+
                     b.HasKey("TransactionLinkId", "TransactionId");
 
                     b.HasIndex("TransactionId");
+
+                    b.HasIndex("TransactionId1");
 
                     b.ToTable("TransactionLinkEntries");
                 });
@@ -237,10 +245,14 @@ namespace FinTracker.Data.Migrations
             modelBuilder.Entity("FinTracker.Domain.Models.TransactionLinkEntry", b =>
                 {
                     b.HasOne("FinTracker.Domain.Models.Transaction", "Transaction")
-                        .WithMany("LinkEntries")
+                        .WithMany()
                         .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("FinTracker.Domain.Models.Transaction", null)
+                        .WithMany("LinkEntries")
+                        .HasForeignKey("TransactionId1");
 
                     b.HasOne("FinTracker.Domain.Models.TransactionLink", "TransactionLink")
                         .WithMany("Entries")

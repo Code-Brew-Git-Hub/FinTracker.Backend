@@ -10,15 +10,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Scope> Scopes { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<TransactionTag> TransactionTags { get; set; }
+    public DbSet<TransactionItem> TransactionItems { get; set; }
+    public DbSet<TransactionLink> TransactionLinks {  get; set; }
+    public DbSet<TransactionLinkEntry> TransactionLinkEntries { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Transaction
+        #region Transaction
         modelBuilder.Entity<Transaction>()
             .HasKey(t => t.Id);  // PRIMARY KEY
         modelBuilder.Entity<Transaction>()
             .Property(t => t.Amount)
-            .IsRequired();  // NOT NULL
+            .IsRequired()  // NOT NULL
+            .HasPrecision(18, 4);
         modelBuilder.Entity<Transaction>()
             .Property(t => t.Currency)
             .IsRequired();  // NOT NULL
@@ -37,10 +41,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         //modelBuilder.Entity<Transaction>()
         //    .HasQueryFilter(t => !t.IsDeleted);
         modelBuilder.Entity<Transaction>()
-            .Property(t => t.Amount)
-            .HasPrecision(18, 4);
+            .Property(t => t.Type)
+            .HasConversion<string>();// хранить как строку ("Income" / "Expense")
+        #endregion
 
-        // Category
+        #region Category
         modelBuilder.Entity<Category>()
             .HasKey(c => c.Id);  // PRIMARY KEY
         modelBuilder.Entity<Category>()
@@ -50,8 +55,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Category>()
             .HasIndex(c => c.Name)
             .IsUnique();  // UNIQUE
+        #endregion
 
-        // Scope
+        #region Scope
         modelBuilder.Entity<Scope>()
             .HasKey(s => s.Id);  // PRIMARY KEY
         modelBuilder.Entity<Scope>()
@@ -61,8 +67,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Scope>()
             .HasIndex(s => s.Name)
             .IsUnique();  // UNIQUE
+        #endregion
 
-        // Tag
+        #region Tag
         modelBuilder.Entity<Tag>()
             .HasKey(t => t.Id);  // PRIMARY KEY
         modelBuilder.Entity<Tag>()
@@ -72,12 +79,61 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Tag>()
             .HasIndex(t => t.Name)
             .IsUnique();  // UNIQUE
+        #endregion
 
-        // TransactionTag
+        #region TransactionTag
         modelBuilder.Entity<TransactionTag>()
             .HasKey(tt => new { tt.TransactionId, tt.TagId });  // PRIMARY KEY
-        //modelBuilder.Entity<TransactionTag>()
-        //    .HasQueryFilter(tt => !tt.Transaction.IsDeleted);
+                                                                //modelBuilder.Entity<TransactionTag>()
+                                                                //    .HasQueryFilter(tt => !tt.Transaction.IsDeleted);
+        #endregion
+
+        #region TransactionItem
+        modelBuilder.Entity<TransactionItem>()
+            .HasKey(ti => ti.Id);
+        modelBuilder.Entity<TransactionItem>()
+            .Property(ti => ti.Amount)
+                .HasPrecision(18, 4)
+                .IsRequired();
+        modelBuilder.Entity<TransactionItem>()
+            .Property(ti => ti.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+        modelBuilder.Entity<TransactionItem>()
+            .HasOne(ti => ti.Transaction)
+                .WithMany(t => t.Items)
+                .HasForeignKey(ti => ti.TransactionId)
+                .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<TransactionItem>()
+            .HasOne(ti => ti.Category)
+                .WithMany()
+                .HasForeignKey(ti => ti.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
+        #endregion
+
+        #region TransactionLinks
+        modelBuilder.Entity<TransactionLink>()
+            .HasKey(tl => tl.Id);
+        modelBuilder.Entity<TransactionLink>()
+            .Property(tl => tl.Type)
+            .IsRequired()
+            .HasConversion<string>(); // хранить как строку ("Compensation" / "Transfer")
+        #endregion
+
+        #region TransactionLinkEntries
+        modelBuilder.Entity<TransactionLinkEntry>()
+            .HasKey(tle => new { tle.TransactionLinkId, tle.TransactionId });
+        modelBuilder.Entity<TransactionLinkEntry>()
+            .HasOne(tle => tle.TransactionLink)
+            .WithMany(tl => tl.Entries)
+            .HasForeignKey(tle => tle.TransactionLinkId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<TransactionLinkEntry>()
+            .HasOne(tle => tle.Transaction)
+            .WithMany(t => t.LinkEntries)
+            .HasForeignKey(tle => tle.TransactionId)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
 
         base.OnModelCreating(modelBuilder);
     }

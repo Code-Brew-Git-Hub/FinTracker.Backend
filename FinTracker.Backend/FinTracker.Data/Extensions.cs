@@ -43,6 +43,8 @@ public static class Extensions
         serviceCollection.AddScoped<ICategoryService, CategoryService>();
         serviceCollection.AddScoped<ITagService, TagService>();
         serviceCollection.AddScoped<IImportService, ImportService>();
+        serviceCollection.AddScoped<IItemService, ItemService>();
+        serviceCollection.AddScoped<ILinkService, LinkService>();
 
         return serviceCollection;
     }

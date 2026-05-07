@@ -23,10 +23,6 @@ public class Transaction
     public Scope? Scope { get; set; }  // Группа
 
     public ICollection<TransactionTag> TransactionTags { get; set; } = [];  // Теги
-    //public ICollection<TransactionItem> Items { get; set; } = [];  // Элементы транзакции (хлеб, колбаса, вода)
-
-
-
-    
-    //public ICollection<TransactionLinkEntry> LinkEntries { get; set; } = [];
+    public ICollection<TransactionItem> Items { get; set; } = [];  // Элементы транзакции (хлеб, колбаса, вода)
+    public ICollection<TransactionLinkEntry> LinkEntries { get; set; } = [];  // Связи (коменсация / перевод)
 }
