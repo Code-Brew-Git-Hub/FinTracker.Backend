@@ -1,42 +1,48 @@
 ﻿using FinTracker.Domain.Interfaces.Repositories;
 using FinTracker.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinTracker.Data.Repositories;
 
-public class LinkRepository : ILinkRepository
+public class LinkRepository(AppDbContext context) : ILinkRepository
 {
-    public Task AddAsync(TransactionLink entity)
+    public async Task AddAsync(TransactionLink entity)
     {
-        throw new NotImplementedException();
+        await context.AddAsync(entity);
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var link = await GetByIdAsync(id);
+        if (link != null)
+            context.TransactionLinks.Remove(link);
     }
 
-    public Task<IEnumerable<TransactionLink>> GetAllAsync()
+    public async Task<IEnumerable<TransactionLink>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await context.TransactionLinks.ToListAsync();
     }
 
-    public Task<TransactionLink?> GetByIdAsync(Guid id)
+    public async Task<TransactionLink?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await context.TransactionLinks.FindAsync(id);
     }
 
-    public Task<TransactionLink?> GetByIdWithEntriesAsync(Guid id)
+    public async Task<TransactionLink?> GetByIdWithEntriesAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await context.TransactionLinks
+            .Include(tl => tl.Entries)
+                .ThenInclude(e => e.Transaction)
+            .FirstOrDefaultAsync(tl => tl.Id == id);
     }
 
-    public Task SaveChangesAsync()
+    public async Task SaveChangesAsync()
     {
-        throw new NotImplementedException();
+        await context.SaveChangesAsync();
     }
 
-    public Task UpdateAsync(TransactionLink entity)
+    public async Task UpdateAsync(TransactionLink entity)
     {
-        throw new NotImplementedException();
+        context.TransactionLinks.Update(entity);
     }
 }
