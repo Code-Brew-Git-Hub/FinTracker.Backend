@@ -10,16 +10,51 @@ namespace FinTracker.API.Controllers;
 public class ImportController(IImportService importService) : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<ImportResultDto>>> UploadCsv(IFormFile file)
+    public async Task<ActionResult<ApiResponse<FileImportResultDto>>> UploadCsv(IFormFileCollection files)
     {
-        if (file is null || file.Length == 0)
-            return BadRequest(ApiResponse<ImportResultDto>.Fail("Файл не передан или пустой"));
+        if (files is null || files.Count == 0)
+            return BadRequest(ApiResponse<IEnumerable<FileImportResultDto>>.Fail("Файлы не переданы"));
 
-        using var stream = file.OpenReadStream();
-        using var reader = new StreamReader(stream);
+        var results = new List<FileImportResultDto>();
 
-        var result = await importService.ImportAsync(reader, file.FileName);
+        foreach (var file in files)
+        {
+            if (file.Length == 0)
+            {
+                results.Add(new FileImportResultDto
+                {
+                    FileName = file.FileName,
+                    Success = false,
+                    Error = "Файл пустой"
+                });
+                continue;
+            }
 
-        return Ok(ApiResponse<ImportResultDto>.Ok(result));
+            try
+            {
+                using var stream = file.OpenReadStream();
+                using var reader = new StreamReader(stream);
+
+                var result = await importService.ImportAsync(reader, file.FileName);
+
+                results.Add(new FileImportResultDto
+                {
+                    FileName = file.FileName,
+                    Success = true,
+                    Result = result
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                results.Add(new FileImportResultDto
+                {
+                    FileName = file.FileName,
+                    Success = false,
+                    Error = ex.Message
+                });
+            }
+        }
+
+        return Ok(ApiResponse<IEnumerable<FileImportResultDto>>.Ok(results));
     }
 }
