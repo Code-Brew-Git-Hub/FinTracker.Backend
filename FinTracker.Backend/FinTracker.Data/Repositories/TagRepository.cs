@@ -21,7 +21,7 @@ public class TagRepository(AppDbContext context) : ITagRepository
                 .Remove(tag);
     }
 
-    public async Task<IEnumerable<Tag>> GetAllAsync()
+    public async Task<List<Tag>> GetAllAsync()
     {
         return await context.Tags
             .ToListAsync();

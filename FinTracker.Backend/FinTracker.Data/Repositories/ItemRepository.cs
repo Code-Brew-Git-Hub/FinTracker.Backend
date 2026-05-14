@@ -18,7 +18,7 @@ public class ItemRepository(AppDbContext context) : IItemRepository
             context.TransactionItems.Remove(item);
     }
 
-    public async Task<IEnumerable<TransactionItem>> GetAllAsync()
+    public async Task<List<TransactionItem>> GetAllAsync()
     {
         return await context.TransactionItems.ToListAsync();
     }

@@ -18,7 +18,7 @@ public class LinkRepository(AppDbContext context) : ILinkRepository
             context.TransactionLinks.Remove(link);
     }
 
-    public async Task<IEnumerable<TransactionLink>> GetAllAsync()
+    public async Task<List<TransactionLink>> GetAllAsync()
     {
         return await context.TransactionLinks.ToListAsync();
     }

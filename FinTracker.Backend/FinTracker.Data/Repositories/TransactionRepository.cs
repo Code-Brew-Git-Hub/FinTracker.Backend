@@ -72,7 +72,7 @@ public class TransactionRepository(AppDbContext context) : ITransactionRepositor
                 .Remove(transaction);
     }
 
-    public async Task<IEnumerable<Transaction>> GetAllAsync()
+    public async Task<List<Transaction>> GetAllAsync()
     {
         return await context.Transactions
             .ToListAsync();
@@ -92,14 +92,14 @@ public class TransactionRepository(AppDbContext context) : ITransactionRepositor
         return await GetByIdAsync(id, true);
     }
 
-    public async Task<IEnumerable<Transaction>> GetByScopeIdAsync(Guid scopeId)
+    public async Task<List<Transaction>> GetByScopeIdAsync(Guid scopeId)
     {
         return await context.Transactions
             .Where(t => t.ScopeId == scopeId)
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Transaction>> GetFilteredAsync(TransactionFilter filter, bool includeDeleted)
+    public async Task<List<Transaction>> GetFilteredAsync(TransactionFilter filter, bool includeDeleted)
     {
         var query = context.Transactions
         .Include(t => t.Category)

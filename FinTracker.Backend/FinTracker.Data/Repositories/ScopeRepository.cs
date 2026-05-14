@@ -19,7 +19,7 @@ public class ScopeRepository(AppDbContext context) : IScopeRepository
                 .Remove(scope);
     }
 
-    public async Task<IEnumerable<Scope>> GetAllAsync()
+    public async Task<List<Scope>> GetAllAsync()
     {
         return await context.Scopes
             .ToListAsync();
