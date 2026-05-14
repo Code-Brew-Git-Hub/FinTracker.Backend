@@ -14,7 +14,6 @@ public class ImportService(TransactionParser parser,
     public async Task<ImportResultDto> ImportAsync(StreamReader reader, string filename)
     {
         var parseResult = await parser.Parse(reader, filename);
-        var parsedTransactionCount = 0;
 
         if (!parseResult.Transactions.Any() && parseResult.Errors.Any())
             throw new ArgumentException(parseResult.Errors.First().Reason);
@@ -23,8 +22,6 @@ public class ImportService(TransactionParser parser,
 
         foreach (var p in parseResult.Transactions)
         {
-            parsedTransactionCount++;
-
             var categoryName = p.CategoryName;
 
             if (!categoryCache.TryGetValue(categoryName, out var category))
@@ -59,8 +56,8 @@ public class ImportService(TransactionParser parser,
 
         return new ImportResultDto
         {
-            Total = parsedTransactionCount + parseResult.Errors.Count,
-            Imported = parsedTransactionCount,
+            Total = parseResult.Transactions.Count + parseResult.Errors.Count,
+            Imported = parseResult.Transactions.Count,
             Errors = parseResult.Errors.Select(e => new ImportErrorDto
             {
                 Row = e.Row,
