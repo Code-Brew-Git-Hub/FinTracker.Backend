@@ -51,6 +51,7 @@ public class CsvParser
     {
         csvReader.Context.RegisterClassMap<TMap>();
 
+        var transactions = new List<ParsedTransaction>();
         var result = new ParseResult();
         var row = 1;
 
@@ -70,13 +71,15 @@ public class CsvParser
                     continue;
                 }
 
-                result.Transactions.Add(transaction);
+                transactions.Add(transaction);
             }
             catch (Exception ex)
             {
                 result.Errors.Add(new ParseError { Row = row, Reason = ex.Message });
             }
         }
+
+        result.Transactions = transactions;
 
         return result;
     }
