@@ -12,13 +12,13 @@ public class CategoriesController(ICategoryService categoryService,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<CategoryDto>>>> GetAll()
+    public async Task<ActionResult<ApiResponse<CategoryDto[]>>> GetAll()
     {
         var categories = await categoryService.GetAllAsync();
 
-        var dto = mapper.Map<IEnumerable<CategoryDto>>(categories);
+        var dto = mapper.Map<CategoryDto[]>(categories);
 
-        return Ok(ApiResponse<IEnumerable<CategoryDto>>.Ok(dto));
+        return Ok(ApiResponse<CategoryDto[]>.Ok(dto));
     }
 
     [HttpGet("{id:guid}")]

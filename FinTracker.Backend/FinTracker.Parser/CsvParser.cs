@@ -10,7 +10,7 @@ public class CsvParser
     private static readonly string TBankHeaders = "\"Дата операции\";\"Дата платежа\";\"Номер карты\";\"Статус\";\"Сумма операции\";\"Валюта операции\";\"Сумма платежа\";\"Валюта платежа\";\"Кэшбэк\";\"Категория\";\"MCC\";\"Описание\";\"Бонусы (включая кэшбэк)\";\"Округление на инвесткопилку\";\"Сумма операции с округлением\"";
     private static readonly string AlfaBankHeaders = "operationDate,transactionDate,accountName,accountNumber,cardName,cardNumber,merchant,amount,currency,status,category,mcc,type,comment,bonusValue,bonusTitle";
     
-    private CsvConfiguration Config = new CsvConfiguration(CultureInfo.GetCultureInfo("ru-RU")) 
+    private static readonly CsvConfiguration Config = new CsvConfiguration(CultureInfo.GetCultureInfo("ru-RU")) 
     {
         HasHeaderRecord = true,
         IgnoreBlankLines = true,
@@ -21,20 +21,34 @@ public class CsvParser
 
     public async Task<ParseResult> ParseCSV(StreamReader reader)
     {
-        var headers = reader.ReadLine();
+        var baseStream = reader.BaseStream;
+        bool canSeek = baseStream.CanSeek;
+        long originalPosition = canSeek ? baseStream.Position : 0;
 
-        if (headers == TBankHeaders)
-            return await ParseWithMap<TBankCsvMap>(reader);
-        else if (headers == AlfaBankHeaders)
-            return await ParseWithMap<AlfaBankCsvMap>(reader);
+        var firstLine = await reader.ReadLineAsync();
 
-        else return new ParseResult() { Errors = new() { new ParseError() { Reason = "Не удалось распознать заголовки файла"} } };
+        if(firstLine == TBankHeaders)
+        {
+            if (canSeek) baseStream.Position = originalPosition;
+            reader.DiscardBufferedData();
+            return await ParseWithMap<TBankCsvMap>(new CsvReader(reader, Config));
+        }
+        else if (firstLine == AlfaBankHeaders)
+        {
+            if (canSeek) baseStream.Position = originalPosition;
+            reader.DiscardBufferedData();
+            return await ParseWithMap<AlfaBankCsvMap>(new CsvReader(reader, Config));
+        }
+        else
+        {
+            return new ParseResult() { Errors = new() { new ParseError() { Reason = "Не удалось распознать заголовки файла" } } };
+        }
+
     }
 
-    private async Task<ParseResult> ParseWithMap<TMap>(StreamReader reader)
+    private async Task<ParseResult> ParseWithMap<TMap>(CsvReader csvReader)
         where TMap : ClassMap
     {
-        using var csvReader = new CsvReader(reader, Config);
         csvReader.Context.RegisterClassMap<TMap>();
 
         var result = new ParseResult();

@@ -54,6 +54,7 @@ public static class Extensions
 
     public static IServiceCollection AddParser(this IServiceCollection serviceCollection)
     {
+        serviceCollection.AddSingleton<CsvParser>();
         serviceCollection.AddScoped<TransactionParser>();
         serviceCollection.AddScoped<CsvParser>();
 

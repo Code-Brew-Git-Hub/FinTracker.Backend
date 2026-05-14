@@ -10,7 +10,7 @@ namespace FinTracker.API.Controllers;
 public class ImportController(IImportService importService) : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<FileImportResultDto>>> UploadCsv(IFormFileCollection files)
+    public async Task<ActionResult<ApiResponse<FileImportResultDto>>> UploadFile(IFormFileCollection files)
     {
         if (files is null || files.Count == 0)
             return BadRequest(ApiResponse<IEnumerable<FileImportResultDto>>.Fail("Файлы не переданы"));
