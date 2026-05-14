@@ -21,7 +21,7 @@ public class CategoryRepository(AppDbContext context) : ICategoryRepository
                 .Remove(category);
     }
 
-    public async Task<IEnumerable<Category>> GetAllAsync()
+    public async Task<List<Category>> GetAllAsync()
     {
         return await context.Categories
             .ToListAsync();            
