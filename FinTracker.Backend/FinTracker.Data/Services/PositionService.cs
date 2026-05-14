@@ -41,7 +41,7 @@ public class PositionService(IPositionRepository itemRepository, ITransactionRep
         await itemRepository.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Position>> GetAllAsync(Guid transactionId)
+    public async Task<List<Position>> GetAllAsync(Guid transactionId)
     {
         _ = await transactionRepository.GetByIdAsync(transactionId)
             ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");

@@ -5,7 +5,7 @@ namespace FinTracker.Domain.Interfaces.Services;
 
 public interface ICategoryService
 {
-    Task<IEnumerable<Category>> GetAllAsync();
+    Task<List<Category>> GetAllAsync();
     Task<Category> GetByIdAsync(Guid id);
     Task<Category> CreateAsync(string name);
     Task<Category> UpdateAsync(Guid id, string name);

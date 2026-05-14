@@ -23,7 +23,7 @@ public class PositionRepository(AppDbContext context) : IPositionRepository
         return await context.TransactionItems.ToListAsync();
     }
 
-    public async Task<IEnumerable<Position>> GetAllByTransactionIdAsync(Guid transactionId)
+    public async Task<List<Position>> GetAllByTransactionIdAsync(Guid transactionId)
     {
         return await context.TransactionItems
             .Include(ti => ti.Category)

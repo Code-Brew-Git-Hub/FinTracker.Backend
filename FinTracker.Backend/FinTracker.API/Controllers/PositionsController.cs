@@ -12,11 +12,11 @@ public class PositionsController(IPositionService itemService,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<PositionDto>>>> GetAll([FromRoute] Guid transactionId)
+    public async Task<ActionResult<ApiResponse<PositionDto[]>>> GetAll([FromRoute] Guid transactionId)
     {
         var items = await itemService.GetAllAsync(transactionId);
 
-        var itemsDto = mapper.Map<IEnumerable<PositionDto>>(items);
+        var itemsDto = mapper.Map<PositionDto[]>(items);
 
         return Ok(ApiResponse.Ok(itemsDto));
     }

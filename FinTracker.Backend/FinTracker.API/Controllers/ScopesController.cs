@@ -13,11 +13,11 @@ public class ScopesController(IScopeService scopeService,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<ScopeDto>>>> GetAll()
+    public async Task<ActionResult<ApiResponse<ScopeDto[]>>> GetAll()
     {
         var scopes = await scopeService.GetAllAsync();
 
-        var scopesDto = mapper.Map<IEnumerable<ScopeDto>>(scopes);
+        var scopesDto = mapper.Map<ScopeDto[]>(scopes);
 
         return Ok(ApiResponse.Ok(scopesDto));
     }
@@ -61,11 +61,11 @@ public class ScopesController(IScopeService scopeService,
     }
 
     [HttpGet("{scopeId:guid}/transactions")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<TransactionDto>>>> GetTransactions(Guid scopeId)
+    public async Task<ActionResult<ApiResponse<TransactionDto[]>>> GetTransactions(Guid scopeId)
     {
         var transactions = await scopeService.GetTransactionsAsync(scopeId);
 
-        var transactionsDto = mapper.Map<IEnumerable<TransactionDto>>(transactions);
+        var transactionsDto = mapper.Map<TransactionDto[]>(transactions);
 
         return Ok(ApiResponse.Ok(transactionsDto));
     }

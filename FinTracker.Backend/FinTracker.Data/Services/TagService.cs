@@ -31,7 +31,7 @@ public class TagService(ITagRepository tagRepository) : ITagService
         await tagRepository.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Tag>> GetAllAsync()
+    public async Task<List<Tag>> GetAllAsync()
     {
         return await tagRepository.GetAllAsync();
     }

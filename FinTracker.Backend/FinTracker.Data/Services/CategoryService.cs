@@ -26,7 +26,7 @@ public class CategoryService(ICategoryRepository categoryRepository) : ICategory
         await categoryRepository.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Category>> GetAllAsync()
+    public async Task<List<Category>> GetAllAsync()
     {
         return await categoryRepository.GetAllAsync();
     }

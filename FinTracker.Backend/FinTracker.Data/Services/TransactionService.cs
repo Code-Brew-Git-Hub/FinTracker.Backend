@@ -92,7 +92,7 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
         return transaction;
     }
 
-    public async Task<IEnumerable<Transaction>> GetFilteredAsync(TransactionFilter filter, bool includeDeleted)
+    public async Task<List<Transaction>> GetFilteredAsync(TransactionFilter filter, bool includeDeleted)
     {
         if (filter.Page < 1)
             throw new ArgumentException($"Page must be grater then zero, but was {filter.Page}");

@@ -31,7 +31,7 @@ public class ScopeService(IScopeRepository scopeRepository,
         await scopeRepository.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Scope>> GetAllAsync()
+    public async Task<List<Scope>> GetAllAsync()
     {
         return await scopeRepository.GetAllAsync();
     }
@@ -42,7 +42,7 @@ public class ScopeService(IScopeRepository scopeRepository,
             ?? throw new KeyNotFoundException($"Scope {id} not found");
     }
 
-    public async Task<IEnumerable<Transaction>> GetTransactionsAsync(Guid scopeId)
+    public async Task<List<Transaction>> GetTransactionsAsync(Guid scopeId)
     {
         var scope = await scopeRepository.GetByIdAsync(scopeId)
             ?? throw new KeyNotFoundException($"Scope {scopeId} not found");

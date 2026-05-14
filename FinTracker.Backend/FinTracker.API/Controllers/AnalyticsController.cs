@@ -17,19 +17,19 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
     }
 
     [HttpGet("by-category")]
-        public async Task<ActionResult<ApiResponse<IEnumerable<CategoryStatDto>>>> GetByCategory([FromQuery] AnalyticsFilterDto filter)
+        public async Task<ActionResult<ApiResponse<CategoryStatDto[]>>> GetByCategory([FromQuery] AnalyticsFilterDto filter)
     {
         throw new NotImplementedException();
     }
 
     [HttpGet("by-tag")]
-        public async Task<ActionResult<ApiResponse<IEnumerable<TagStatDto>>>> GetByTag([FromQuery] AnalyticsFilterDto filter)
+        public async Task<ActionResult<ApiResponse<TagStatDto[]>>> GetByTag([FromQuery] AnalyticsFilterDto filter)
     {
         throw new NotImplementedException();
     }
 
     [HttpGet("by-time")]
-        public async Task<ActionResult<ApiResponse<IEnumerable<TimeStatDto>>>> GetByTime([FromQuery] AnalyticsFilterDto filter, [FromQuery] TimeGrouping grouping)
+        public async Task<ActionResult<ApiResponse<TimeStatDto[]>>> GetByTime([FromQuery] AnalyticsFilterDto filter, [FromQuery] TimeGrouping grouping)
     {
         throw new NotImplementedException();
     }

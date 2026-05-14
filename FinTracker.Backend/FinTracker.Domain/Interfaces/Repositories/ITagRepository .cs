@@ -4,5 +4,5 @@ namespace FinTracker.Domain.Interfaces.Repositories;
 
 public interface ITagRepository : IRepository<Tag>
 {
-    Task<IEnumerable<Tag>> GetByNamesAsync(IEnumerable<string> names);
+    Task<List<Tag>> GetByNamesAsync(List<string> names);
 }

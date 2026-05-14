@@ -7,7 +7,7 @@ namespace FinTracker.Data.Services;
 public interface ITransactionService
 {
     Task<Transaction> GetByIdAsync(Guid id, bool includeDeleted);
-    Task<IEnumerable<Transaction>> GetFilteredAsync(TransactionFilter filter, bool includeDeleted);
+    Task<List<Transaction>> GetFilteredAsync(TransactionFilter filter, bool includeDeleted);
     Task<Transaction> CreateAsync(CreateTransactionDto dto);
     Task<Transaction> UpdateAsync(Guid id, UpdateTransactionDto dto);
     Task DeleteAsync(Guid id);

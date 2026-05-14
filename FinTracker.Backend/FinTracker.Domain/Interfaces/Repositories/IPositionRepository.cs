@@ -4,5 +4,5 @@ namespace FinTracker.Domain.Interfaces.Repositories;
 
 public interface IPositionRepository : IRepository<Position>
 {
-    Task<IEnumerable<Position>> GetAllByTransactionIdAsync(Guid transactionId);
+    Task<List<Position>> GetAllByTransactionIdAsync(Guid transactionId);
 }

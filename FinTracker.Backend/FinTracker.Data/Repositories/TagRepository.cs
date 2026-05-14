@@ -33,7 +33,7 @@ public class TagRepository(AppDbContext context) : ITagRepository
             .FindAsync(id);
     }
 
-    public async Task<IEnumerable<Tag>> GetByNamesAsync(IEnumerable<string> names)
+    public async Task<List<Tag>> GetByNamesAsync(List<string> names)
     {
         return await context.Tags
             .Where(tg => names.Contains(tg.Name))

@@ -12,11 +12,11 @@ public class TagsController(ITagService tagService,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<TagDto>>>> GetAll()
+    public async Task<ActionResult<ApiResponse<TagDto[]>>> GetAll()
     {
         var tags = await tagService.GetAllAsync();
 
-        var tagsDto = mapper.Map<IEnumerable<TagDto>>(tags);
+        var tagsDto = mapper.Map<TagDto[]>(tags);
 
         return Ok(ApiResponse.Ok(tagsDto));
     }

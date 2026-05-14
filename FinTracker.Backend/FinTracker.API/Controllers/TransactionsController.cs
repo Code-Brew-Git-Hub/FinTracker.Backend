@@ -14,11 +14,11 @@ public class TransactionsController(ITransactionService transactionService,
 {
     
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<TransactionDto>>>> GetAll([FromQuery] TransactionFilter filter, [FromQuery] bool includeDeleted=false)
+    public async Task<ActionResult<ApiResponse<TransactionDto[]>>> GetAll([FromQuery] TransactionFilter filter, [FromQuery] bool includeDeleted=false)
     {
         var transactions = await transactionService.GetFilteredAsync(filter, includeDeleted);
 
-        var transactionsDto = mapper.Map<IEnumerable<TransactionDto>>(transactions);
+        var transactionsDto = mapper.Map<TransactionDto[]>(transactions);
 
         return Ok(ApiResponse.Ok(transactionsDto));
     }
