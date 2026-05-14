@@ -12,7 +12,7 @@ public class PositionService(IPositionRepository itemRepository, ITransactionRep
         _ = await transactionRepository.GetByIdAsync(transactionId)
             ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
 
-        await ValidateTotalAmount(transactionId, dto.Amount);
+        //await ValidateTotalAmount(transactionId, dto.Amount);
 
         var item = new Position
         {
@@ -66,7 +66,7 @@ public class PositionService(IPositionRepository itemRepository, ITransactionRep
 
         if (dto.Amount != null)
         {
-            await ValidateTotalAmount(transactionId, dto.Amount.Value, excludeItemId: itemId);
+            //await ValidateTotalAmount(transactionId, dto.Amount.Value, excludeItemId: itemId);
             item.Amount = dto.Amount.Value;
         }
 
@@ -79,20 +79,20 @@ public class PositionService(IPositionRepository itemRepository, ITransactionRep
         return item;
     }
 
-    private async Task ValidateTotalAmount(Guid transactionId, decimal newItemAmount, Guid? excludeItemId = null)
-    {
-        var transaction = await transactionRepository.GetByIdAsync(transactionId)
-            ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
+    //private async Task ValidateTotalAmount(Guid transactionId, decimal newItemAmount, Guid? excludeItemId = null)
+    //{
+    //    var transaction = await transactionRepository.GetByIdAsync(transactionId)
+    //        ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
 
-        var existingItems = await itemRepository.GetAllByTransactionIdAsync(transactionId);
+    //    var existingItems = await itemRepository.GetAllByTransactionIdAsync(transactionId);
 
-        // При обновлении исключаем старую сумму редактируемого item
-        var currentTotal = existingItems
-            .Where(i => i.Id != excludeItemId)
-            .Sum(i => i.Amount);
+    //    // При обновлении исключаем старую сумму редактируемого item
+    //    var currentTotal = existingItems
+    //        .Where(i => i.Id != excludeItemId)
+    //        .Sum(i => i.Amount);
 
-        if (currentTotal + newItemAmount > Math.Abs(transaction.Amount))
-            throw new ArgumentException(
-                $"Сумма позиций ({currentTotal + newItemAmount}) превышает сумму транзакции ({Math.Abs(transaction.Amount)})");
-    }
+    //    if (currentTotal + newItemAmount > Math.Abs(transaction.Amount))
+    //        throw new ArgumentException(
+    //            $"Сумма позиций ({currentTotal + newItemAmount}) превышает сумму транзакции ({Math.Abs(transaction.Amount)})");
+    //}
 }
