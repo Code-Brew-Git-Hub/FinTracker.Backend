@@ -13,7 +13,7 @@ public class ImportController(IImportService importService) : ControllerBase
     public async Task<ActionResult<ApiResponse<FileImportResultDto>>> UploadFile(IFormFileCollection files)
     {
         if (files is null || files.Count == 0)
-            return BadRequest(ApiResponse.Fail("Файлы не переданы"));
+            return BadRequest(ApiResponse<object>.Fail("Файлы не переданы"));
 
         var results = new List<FileImportResultDto>();
 
