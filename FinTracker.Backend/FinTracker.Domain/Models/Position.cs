@@ -1,7 +1,7 @@
 ﻿
 namespace FinTracker.Domain.Models;
 
-public class TransactionItem
+public class Position
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

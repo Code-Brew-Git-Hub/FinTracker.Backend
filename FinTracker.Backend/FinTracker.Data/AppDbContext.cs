@@ -10,7 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Scope> Scopes { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<TransactionTag> TransactionTags { get; set; }
-    public DbSet<TransactionItem> TransactionItems { get; set; }
+    public DbSet<Position> TransactionItems { get; set; }
     public DbSet<TransactionLink> TransactionLinks {  get; set; }
     public DbSet<TransactionLinkEntry> TransactionLinkEntries { get; set; }
 
@@ -89,22 +89,22 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         #endregion
 
         #region TransactionItem
-        modelBuilder.Entity<TransactionItem>()
+        modelBuilder.Entity<Position>()
             .HasKey(ti => ti.Id);
-        modelBuilder.Entity<TransactionItem>()
+        modelBuilder.Entity<Position>()
             .Property(ti => ti.Amount)
                 .HasPrecision(18, 4)
                 .IsRequired();
-        modelBuilder.Entity<TransactionItem>()
+        modelBuilder.Entity<Position>()
             .Property(ti => ti.Name)
                 .IsRequired()
                 .HasMaxLength(200);
-        modelBuilder.Entity<TransactionItem>()
+        modelBuilder.Entity<Position>()
             .HasOne(ti => ti.Transaction)
-                .WithMany(t => t.Items)
+                .WithMany(t => t.Positions)
                 .HasForeignKey(ti => ti.TransactionId)
                 .OnDelete(DeleteBehavior.Cascade);
-        modelBuilder.Entity<TransactionItem>()
+        modelBuilder.Entity<Position>()
             .HasOne(ti => ti.Category)
                 .WithMany()
                 .HasForeignKey(ti => ti.CategoryId)

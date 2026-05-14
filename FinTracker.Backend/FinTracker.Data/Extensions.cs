@@ -32,7 +32,7 @@ public static class Extensions
         serviceCollection.AddScoped<IScopeRepository, ScopeRepository>();
         serviceCollection.AddScoped<ICategoryRepository, CategoryRepository>();
         serviceCollection.AddScoped<ITagRepository, TagRepository>();
-        serviceCollection.AddScoped<IItemRepository, ItemRepository>();
+        serviceCollection.AddScoped<IPositionRepository, PositionRepository>();
         serviceCollection.AddScoped<ILinkRepository, LinkRepository>();
 
         return serviceCollection;
@@ -45,7 +45,7 @@ public static class Extensions
         serviceCollection.AddScoped<ICategoryService, CategoryService>();
         serviceCollection.AddScoped<ITagService, TagService>();
         serviceCollection.AddScoped<IImportService, ImportService>();
-        serviceCollection.AddScoped<IItemService, ItemService>();
+        serviceCollection.AddScoped<IPositionService, PositionService>();
         serviceCollection.AddScoped<ILinkService, LinkService>();
         serviceCollection.AddScoped<IAnalyticsService, AnalyticsService>();
 

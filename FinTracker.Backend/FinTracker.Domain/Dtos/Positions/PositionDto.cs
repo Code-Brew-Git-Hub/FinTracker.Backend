@@ -1,6 +1,6 @@
-﻿namespace FinTracker.Domain.Dtos.TransactionItems;
+﻿namespace FinTracker.Domain.Dtos.Positions;
 
-public class CreateTransactionItemDto
+public class PositionDto
 {
     public string Name { get; set; }
     public decimal Amount { get; set; }

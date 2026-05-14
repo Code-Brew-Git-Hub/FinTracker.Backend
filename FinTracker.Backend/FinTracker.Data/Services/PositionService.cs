@@ -1,20 +1,20 @@
-﻿using FinTracker.Domain.Dtos.TransactionItems;
+﻿using FinTracker.Domain.Dtos.Positions;
 using FinTracker.Domain.Interfaces.Repositories;
 using FinTracker.Domain.Interfaces.Services;
 using FinTracker.Domain.Models;
 
 namespace FinTracker.Data.Services;
 
-public class ItemService(IItemRepository itemRepository, ITransactionRepository transactionRepository) : IItemService
+public class PositionService(IPositionRepository itemRepository, ITransactionRepository transactionRepository) : IPositionService
 {
-    public async Task<TransactionItem> CreateAsync(Guid transactionId, CreateTransactionItemDto dto)
+    public async Task<Position> CreateAsync(Guid transactionId, CreatePositionDto dto)
     {
         _ = await transactionRepository.GetByIdAsync(transactionId)
             ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
 
         await ValidateTotalAmount(transactionId, dto.Amount);
 
-        var item = new TransactionItem
+        var item = new Position
         {
             Id = Guid.NewGuid(),
             Name = dto.Name,
@@ -41,7 +41,7 @@ public class ItemService(IItemRepository itemRepository, ITransactionRepository 
         await itemRepository.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<TransactionItem>> GetAllAsync(Guid transactionId)
+    public async Task<IEnumerable<Position>> GetAllAsync(Guid transactionId)
     {
         _ = await transactionRepository.GetByIdAsync(transactionId)
             ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
@@ -49,7 +49,7 @@ public class ItemService(IItemRepository itemRepository, ITransactionRepository 
         return await itemRepository.GetAllByTransactionIdAsync(transactionId);
     }
 
-    public async Task<TransactionItem> UpdateAsync(Guid transactionId, Guid itemId, UpdateTransactionItemDto dto)
+    public async Task<Position> UpdateAsync(Guid transactionId, Guid itemId, UpdatePositionDto dto)
     {
         _ = await transactionRepository.GetByIdAsync(transactionId)
             ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");

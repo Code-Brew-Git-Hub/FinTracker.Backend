@@ -1,7 +1,7 @@
 ﻿using FinTracker.Domain.Dtos.Categories;
 using FinTracker.Domain.Dtos.Scopes;
 using FinTracker.Domain.Dtos.Tags;
-using FinTracker.Domain.Dtos.TransactionItems;
+using FinTracker.Domain.Dtos.Positions;
 using FinTracker.Domain.Dtos.TransactionLinks;
 using FinTracker.Domain.Dtos.Transactions;
 using FinTracker.Domain.Models;
@@ -37,7 +37,7 @@ public static class MappingConfig
             .Ignore(dest => dest.Scope);
 
         // TransactionItem
-        TypeAdapterConfig<TransactionItem, TransactionItemDto>.NewConfig();
+        TypeAdapterConfig<Position, PositionDto>.NewConfig();
 
         // TransactionLink — транзакции берём через Entries
         TypeAdapterConfig<TransactionLink, TransactionLinkDto>.NewConfig()

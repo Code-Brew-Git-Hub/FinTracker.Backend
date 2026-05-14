@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinTracker.Data.Repositories;
 
-public class ItemRepository(AppDbContext context) : IItemRepository
+public class PositionRepository(AppDbContext context) : IPositionRepository
 {
-    public async Task AddAsync(TransactionItem entity)
+    public async Task AddAsync(Position entity)
     {
         await context.TransactionItems.AddAsync(entity);
     }
@@ -18,12 +18,12 @@ public class ItemRepository(AppDbContext context) : IItemRepository
             context.TransactionItems.Remove(item);
     }
 
-    public async Task<List<TransactionItem>> GetAllAsync()
+    public async Task<List<Position>> GetAllAsync()
     {
         return await context.TransactionItems.ToListAsync();
     }
 
-    public async Task<IEnumerable<TransactionItem>> GetAllByTransactionIdAsync(Guid transactionId)
+    public async Task<IEnumerable<Position>> GetAllByTransactionIdAsync(Guid transactionId)
     {
         return await context.TransactionItems
             .Include(ti => ti.Category)
@@ -31,7 +31,7 @@ public class ItemRepository(AppDbContext context) : IItemRepository
             .ToListAsync();
     }
 
-    public async Task<TransactionItem?> GetByIdAsync(Guid id)
+    public async Task<Position?> GetByIdAsync(Guid id)
     {
         return await context.TransactionItems.FindAsync(id);
     }
@@ -41,7 +41,7 @@ public class ItemRepository(AppDbContext context) : IItemRepository
         await context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(TransactionItem entity)
+    public async Task UpdateAsync(Position entity)
     {
         context.TransactionItems.Update(entity);
     }
