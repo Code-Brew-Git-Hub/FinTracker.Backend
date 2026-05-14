@@ -19,7 +19,7 @@ public class ItemsController(IItemService itemService,
 
         var itemsDto = mapper.Map<IEnumerable<TransactionItemDto>>(items);
 
-        return Ok(ApiResponse<IEnumerable<TransactionItemDto>>.Ok(itemsDto));
+        return Ok(ApiResponse.Ok(itemsDto));
     }
 
     [HttpPost]
@@ -29,7 +29,7 @@ public class ItemsController(IItemService itemService,
 
         var createdItemDto = mapper.Map<TransactionItemDto>(createdItem);
 
-        return Ok(ApiResponse<TransactionItemDto>.Ok(createdItemDto));
+        return Ok(ApiResponse.Ok(createdItemDto));
     }
 
     [HttpPut("{itemId:guid}")]
@@ -39,7 +39,7 @@ public class ItemsController(IItemService itemService,
 
         var updatedItemDto = mapper.Map<TransactionItemDto>(updatedItem);
 
-        return Ok(ApiResponse<TransactionItemDto>.Ok(updatedItemDto));
+        return Ok(ApiResponse.Ok(updatedItemDto));
     }
 
     [HttpDelete("{itemId:guid}")]

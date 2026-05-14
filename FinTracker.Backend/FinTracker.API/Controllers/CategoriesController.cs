@@ -18,7 +18,7 @@ public class CategoriesController(ICategoryService categoryService,
 
         var dto = mapper.Map<CategoryDto[]>(categories);
 
-        return Ok(ApiResponse<CategoryDto[]>.Ok(dto));
+        return Ok(ApiResponse.Ok(dto));
     }
 
     [HttpGet("{id:guid}")]
@@ -28,7 +28,7 @@ public class CategoriesController(ICategoryService categoryService,
 
         var dto = mapper.Map<CategoryDto>(category);
 
-        return Ok(ApiResponse<CategoryDto>.Ok(dto));
+        return Ok(ApiResponse.Ok(dto));
     }
 
     [HttpPost]
@@ -38,7 +38,7 @@ public class CategoriesController(ICategoryService categoryService,
 
         var catDto = mapper.Map<CategoryDto>(createdCategory);
 
-        return Ok(ApiResponse<CategoryDto>.Ok(catDto));
+        return Ok(ApiResponse.Ok(catDto));
     }
 
     [HttpPut("{id:guid}")]
@@ -49,7 +49,7 @@ public class CategoriesController(ICategoryService categoryService,
 
         var catDto = mapper.Map<CategoryDto>(updatedCategory);
 
-        return Ok(ApiResponse<CategoryDto>.Ok(catDto));
+        return Ok(ApiResponse.Ok(catDto));
     }
 
     [HttpDelete("{id:guid}")]

@@ -19,7 +19,7 @@ public class ScopesController(IScopeService scopeService,
 
         var scopesDto = mapper.Map<IEnumerable<ScopeDto>>(scopes);
 
-        return Ok(ApiResponse<IEnumerable<ScopeDto>>.Ok(scopesDto));
+        return Ok(ApiResponse.Ok(scopesDto));
     }
 
     [HttpGet("{id:guid}")]
@@ -29,7 +29,7 @@ public class ScopesController(IScopeService scopeService,
 
         var scopeDto = mapper.Map<ScopeDto>(scope);
 
-        return Ok(ApiResponse<ScopeDto>.Ok(scopeDto));
+        return Ok(ApiResponse.Ok(scopeDto));
     }
 
     [HttpPost]
@@ -39,7 +39,7 @@ public class ScopesController(IScopeService scopeService,
 
         var createdScopeDto = mapper.Map<ScopeDto>(createdScope);
 
-        return Ok(ApiResponse<ScopeDto>.Ok(createdScopeDto));
+        return Ok(ApiResponse.Ok(createdScopeDto));
     }
 
     [HttpPut("{id:guid}")]
@@ -49,7 +49,7 @@ public class ScopesController(IScopeService scopeService,
 
         var updatedScopeDto = mapper.Map<ScopeDto>(updatedScope);
 
-        return Ok(ApiResponse<ScopeDto>.Ok(updatedScopeDto));
+        return Ok(ApiResponse.Ok(updatedScopeDto));
     }
 
     [HttpDelete("{id:guid}")]
@@ -67,6 +67,6 @@ public class ScopesController(IScopeService scopeService,
 
         var transactionsDto = mapper.Map<IEnumerable<TransactionDto>>(transactions);
 
-        return Ok(ApiResponse<IEnumerable<TransactionDto>>.Ok(transactionsDto));
+        return Ok(ApiResponse.Ok(transactionsDto));
     }
 }

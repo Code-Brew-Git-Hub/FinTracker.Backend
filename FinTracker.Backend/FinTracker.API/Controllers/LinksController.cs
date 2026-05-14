@@ -17,7 +17,7 @@ public class LinksController(ILinkService linkService, IMapper mapper) : Control
 
         var linkDto = mapper.Map<TransactionLinkDto>(link);
 
-        return Ok(ApiResponse<TransactionLinkDto>.Ok(linkDto));
+        return Ok(ApiResponse.Ok(linkDto));
     }
 
     [HttpPost]
@@ -27,7 +27,7 @@ public class LinksController(ILinkService linkService, IMapper mapper) : Control
 
         var createdLinkDto = mapper.Map<TransactionLinkDto>(createdLink);
 
-        return Ok(ApiResponse<TransactionLinkDto>.Ok(createdLinkDto));
+        return Ok(ApiResponse.Ok(createdLinkDto));
     }
 
     [HttpPost("{id:guid}/transactions")]
@@ -37,7 +37,7 @@ public class LinksController(ILinkService linkService, IMapper mapper) : Control
 
         var linkDto = mapper.Map<TransactionLinkDto>(link);
 
-        return Ok(ApiResponse<TransactionLinkDto>.Ok(linkDto));
+        return Ok(ApiResponse.Ok(linkDto));
     }
 
     [HttpDelete("{id:guid}/transactions/{transactionId:guid}")]

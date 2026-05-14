@@ -18,7 +18,7 @@ public class TagsController(ITagService tagService,
 
         var tagsDto = mapper.Map<IEnumerable<TagDto>>(tags);
 
-        return Ok(ApiResponse<IEnumerable<TagDto>>.Ok(tagsDto));
+        return Ok(ApiResponse.Ok(tagsDto));
     }
 
     [HttpPost]
@@ -28,7 +28,7 @@ public class TagsController(ITagService tagService,
 
         var createdTagDto = mapper.Map<TagDto>(createdTag);
 
-        return Ok(ApiResponse<TagDto>.Ok(createdTagDto));
+        return Ok(ApiResponse.Ok(createdTagDto));
     }
 
     [HttpDelete("{id:guid}")]

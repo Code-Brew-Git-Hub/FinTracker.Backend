@@ -20,7 +20,7 @@ public class TransactionsController(ITransactionService transactionService,
 
         var transactionsDto = mapper.Map<IEnumerable<TransactionDto>>(transactions);
 
-        return Ok(ApiResponse<IEnumerable<TransactionDto>>.Ok(transactionsDto));
+        return Ok(ApiResponse.Ok(transactionsDto));
     }
 
     [HttpGet("{id:guid}")]
@@ -30,7 +30,7 @@ public class TransactionsController(ITransactionService transactionService,
 
         var transactionDto = mapper.Map<TransactionDto>(transaction);
 
-        return Ok(ApiResponse<TransactionDto>.Ok(transactionDto));
+        return Ok(ApiResponse.Ok(transactionDto));
     }
 
     [HttpPost]
@@ -40,7 +40,7 @@ public class TransactionsController(ITransactionService transactionService,
 
         var createdTransactionDto = mapper.Map<TransactionDto>(createdTransaction);
 
-        return Ok(ApiResponse<TransactionDto>.Ok(createdTransactionDto));
+        return Ok(ApiResponse.Ok(createdTransactionDto));
     }
 
     [HttpPut("{id:guid}")]
@@ -50,7 +50,7 @@ public class TransactionsController(ITransactionService transactionService,
 
         var updatedTransactionDto = mapper.Map<TransactionDto>(updatedTransaction);
 
-        return Ok(ApiResponse<TransactionDto>.Ok(updatedTransactionDto));
+        return Ok(ApiResponse.Ok(updatedTransactionDto));
     }
 
     [HttpDelete("{id:guid}")]
