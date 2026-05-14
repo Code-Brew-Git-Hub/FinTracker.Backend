@@ -1,19 +1,57 @@
 ﻿using FinTracker.Domain.Enums;
 
 namespace FinTracker.Domain.Models.ModelsToHelp;
-
+/// <summary>
+/// Фильтрация транзакций
+/// </summary>
 public class TransactionFilter
 {
+    /// <summary>
+    /// По дате: с какого числа (включительно)
+    /// </summary>
     public DateTime? DateFrom { get; set; }
+    /// <summary>
+    /// По дате: по какое число (включительно)
+    /// </summary>
     public DateTime? DateTo { get; set; }
+    /// <summary>
+    /// По сумме: с какой суммы (включительно)
+    /// </summary>
     public decimal? AmountMin { get; set; }
+    /// <summary>
+    /// По сумме: до какой суммы (включительно)
+    /// </summary>
     public decimal? AmountMax { get; set; }
+    /// <summary>
+    /// По категории: id категории
+    /// </summary>
     public Guid? CategoryId { get; set; }
+    /// <summary>
+    /// По типу: тип транзакции
+    /// </summary>
     public TransactionType? Type { get; set; }
+    /// <summary>
+    /// По тегам: список id тегов
+    /// </summary>
     public List<Guid>? TagIds { get; set; }
+    /// <summary>
+    /// По группе: id группы
+    /// </summary>
     public Guid? ScopeId { get; set; }
-    public string? Search { get; set; }  // Поиск в описании
+    /// <summary>
+    /// Быстрый поиск: поиск в описании, ... (пока все)
+    /// </summary>
+    public string? Search { get; set; }
+    /// <summary>
+    /// Показать транзакции без группы
+    /// </summary>
     public bool ExcludeScopes { get; set; }
+    /// <summary>
+    /// Номер страницы
+    /// </summary>
     public int Page { get; set; } = 1;
+    /// <summary>
+    /// Количество транзакий на странице
+    /// </summary>
     public int PageSize { get; set; } = 50;
 }

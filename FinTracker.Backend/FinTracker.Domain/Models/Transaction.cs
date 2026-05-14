@@ -1,28 +1,76 @@
 ﻿using FinTracker.Domain.Enums;
 
 namespace FinTracker.Domain.Models;
-
+/// <summary>
+/// Транзакция
+/// </summary>
 public class Transaction
 {
-    // Данные от банка
-    public Guid Id { get; set; }  // Id транзакции
-    public decimal Amount { get; set; }  // Сумма транзакции (1500 | 124,12)
-    public string Currency { get; set; } = string.Empty; // Валюта транзакции (например RUB, USD)
-    public DateTime Date { get; set; }  // Дата платежа (11.02.2025 11:46:53 | 24.03.2025)
-    public string? Description { get; set; } // Описание (Между счетами)
-    public string? Comment { get; set; } // Комментарий пользователя
-    public TransactionType Type { get; set; }  // Тип (expense / income)
-    public bool IsDeleted { get; set; } // Признак soft delete
+    /// <summary>
+    /// Id транзакции
+    /// </summary>
+    public Guid Id { get; set; }
+    /// <summary>
+    /// Сумма транзакции
+    /// </summary>
+    public decimal Amount { get; set; }
+    /// <summary>
+    /// Валюта транзакции
+    /// </summary>
+    public string Currency { get; set; } = string.Empty;
+    /// <summary>
+    /// Дата платежа
+    /// </summary>
+    public DateTime Date { get; set; }
+    /// <summary>
+    /// Описание
+    /// </summary>
+    public string? Description { get; set; }
+    /// <summary>
+    /// Комментарий пользователя
+    /// </summary>
+    public string? Comment { get; set; }
+    /// <summary>
+    /// Тип транзакции (Доход / Расход)
+    /// </summary>
+    public TransactionType Type { get; set; }
+    /// <summary>
+    /// Признак soft delete
+    /// </summary>
+    public bool IsDeleted { get; set; }
 
     // Foreign Keys
-    public Guid CategoryId { get; set; }  // id категории
-    public Guid? ScopeId { get; set; }  // id группы
-        
-    // Navigation
-    public Category Category { get; set; }  // Категория
-    public Scope? Scope { get; set; }  // Группа
 
-    public ICollection<TransactionTag> TransactionTags { get; set; } = [];  // Теги
-    public ICollection<Position> Positions { get; set; } = [];  // Элементы транзакции (хлеб, колбаса, вода)
-    public ICollection<TransactionLinkEntry> LinkEntries { get; set; } = [];  // Связи (коменсация / перевод)
+    /// <summary>
+    /// Id категории
+    /// </summary>
+    public Guid CategoryId { get; set; }
+    /// <summary>
+    /// Id группы
+    /// </summary>
+    public Guid? ScopeId { get; set; }
+
+    // Navigation
+
+    /// <summary>
+    /// Категория
+    /// </summary>
+    public Category Category { get; set; }
+    /// <summary>
+    /// Группа
+    /// </summary>
+    public Scope? Scope { get; set; }
+
+    /// <summary>
+    /// Теги
+    /// </summary>
+    public ICollection<TransactionTag> TransactionTags { get; set; } = [];
+    /// <summary>
+    /// Позиции транзакции
+    /// </summary>
+    public ICollection<Position> Positions { get; set; } = [];  // (хлеб, колбаса, вода)
+    /// <summary>
+    /// Связи транзакции
+    /// </summary>
+    public ICollection<TransactionLinkEntry> LinkEntries { get; set; } = [];  // (коменсация / перевод)
 }
