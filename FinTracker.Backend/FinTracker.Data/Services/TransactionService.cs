@@ -77,7 +77,7 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
             transaction.ScopeId = dto.ScopeId;
         if (dto.TagIds != null && dto.TagIds.Any())
         {
-            transaction.TransactionTags.Clear();
+            //transaction.TransactionTags.Clear();
             transaction.TransactionTags = dto.TagIds
                 .Select(tagId => new TransactionTag
                 {

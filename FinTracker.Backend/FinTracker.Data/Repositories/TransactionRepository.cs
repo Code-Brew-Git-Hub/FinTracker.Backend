@@ -36,7 +36,7 @@ public class TransactionRepository(AppDbContext context) : ITransactionRepositor
 
             if (dto.ReplaceTagIds != null)
             {
-                transaction.TransactionTags.Clear();
+                //transaction.TransactionTags.Clear();
                 transaction.TransactionTags = dto.ReplaceTagIds
                     .Select(tagId => new TransactionTag
                     {
