@@ -2,7 +2,7 @@
 namespace FinTracker.Domain.Enums;
 
 /// <summary>
-/// Тип транзакции: расход, доход
+/// Тип транзакции: расход / доход
 /// </summary>
 public enum TransactionType
 {
@@ -15,5 +15,3 @@ public enum TransactionType
     /// </summary>
     Income
 }
-
-// System.ComponentModel.DescriptionAttribute 
