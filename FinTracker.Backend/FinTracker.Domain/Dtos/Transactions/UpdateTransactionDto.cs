@@ -9,6 +9,7 @@ public class UpdateTransactionDto
     public string? Comment { get; set; }
     public Guid? CategoryId { get; set; }
     public Guid? ScopeId { get; set; }
+    public bool DeleteScope { get; set; } = false;
     public List<Guid>? TagIds { get; set; }
 }
 

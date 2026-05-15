@@ -73,6 +73,12 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
             transaction.CategoryId = dto.CategoryId.Value;
         if (dto.ScopeId != null)
             transaction.ScopeId = dto.ScopeId;
+        if (dto.DeleteScope)
+        {
+            if (transaction.ScopeId == null)
+                throw new ArgumentException($"Transaction {transaction.Id} doesn't have scope");
+            transaction.ScopeId = null;
+        }
         if (dto.TagIds != null && dto.TagIds.Any())
         {
             //transaction.TransactionTags.Clear();
