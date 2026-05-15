@@ -57,6 +57,8 @@ public class Program
             await context.Response.WriteAsJsonAsync(ApiResponse<object>.Fail(message));
         }));
 
+        app.UseCors("Dev");
+
         app.MapControllers();
         app.UseSwagger();
         app.UseSwaggerUI();
