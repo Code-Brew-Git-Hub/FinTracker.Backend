@@ -10,11 +10,9 @@ public class LinkService(ILinkRepository linkRepository,
 {
     public async Task<TransactionLink> AddTransactionAsync(Guid linkId, Guid transactionId)
     {
-        var link = await linkRepository.GetByIdWithEntriesAsync(linkId)
-            ?? throw new KeyNotFoundException($"Link {linkId} not found");
+        var link = await linkRepository.EnsureExistsAsync(linkId);
 
-        _ = await transactionRepository.GetByIdAsync(transactionId)
-            ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
+        _ = await transactionRepository.EnsureExistsAsync(transactionId);
 
         // Проверяем что транзакция ещё не в этой связи
         if (link.Entries.Any(e => e.TransactionId == transactionId))
@@ -39,8 +37,7 @@ public class LinkService(ILinkRepository linkRepository,
 
         foreach (var transactionId in dto.TransactionIds)
         {
-            _ = await transactionRepository.GetByIdAsync(transactionId)
-                ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
+            _ = await transactionRepository.EnsureExistsAsync(transactionId);
         }
 
         var link = new TransactionLink
@@ -62,8 +59,7 @@ public class LinkService(ILinkRepository linkRepository,
 
     public async Task DeleteAsync(Guid id)
     {
-        _ = await linkRepository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"Link {id} not found");
+        _ = await linkRepository.EnsureExistsAsync(id);
 
         await linkRepository.DeleteAsync(id);
         await linkRepository.SaveChangesAsync();
@@ -71,14 +67,12 @@ public class LinkService(ILinkRepository linkRepository,
 
     public async Task<TransactionLink> GetByIdAsync(Guid id)
     {
-        return await linkRepository.GetByIdWithEntriesAsync(id)
-            ?? throw new KeyNotFoundException($"Link {id} not found");
+        return await linkRepository.EnsureExistsWithEntriesAsync(id);
     }
 
     public async Task RemoveTransactionAsync(Guid linkId, Guid transactionId)
     {
-        var link = await linkRepository.GetByIdWithEntriesAsync(linkId)
-            ?? throw new KeyNotFoundException($"Link {linkId} not found");
+        var link = await linkRepository.EnsureExistsWithEntriesAsync(linkId);
 
         var entry = link.Entries.FirstOrDefault(e => e.TransactionId == transactionId)
             ?? throw new KeyNotFoundException($"Transaction {transactionId} not found in link {linkId}");

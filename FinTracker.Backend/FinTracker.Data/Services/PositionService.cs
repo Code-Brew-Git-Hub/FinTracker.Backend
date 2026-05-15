@@ -9,8 +9,7 @@ public class PositionService(IPositionRepository itemRepository, ITransactionRep
 {
     public async Task<Position> CreateAsync(Guid transactionId, CreatePositionDto dto)
     {
-        _ = await transactionRepository.GetByIdAsync(transactionId)
-            ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
+        _ = await transactionRepository.EnsureExistsAsync(transactionId);
 
         //await ValidateTotalAmount(transactionId, dto.Amount);
 
@@ -31,8 +30,7 @@ public class PositionService(IPositionRepository itemRepository, ITransactionRep
 
     public async Task DeleteAsync(Guid transactionId, Guid itemId)
     {
-        var item = await itemRepository.GetByIdAsync(itemId)
-            ?? throw new KeyNotFoundException($"Item {itemId} not found");
+        var item = await itemRepository.EnsureExistsAsync(itemId);
 
         if (item.TransactionId != transactionId)
             throw new ArgumentException($"Item {itemId} does not belong to transaction {transactionId}");
@@ -43,19 +41,16 @@ public class PositionService(IPositionRepository itemRepository, ITransactionRep
 
     public async Task<List<Position>> GetAllAsync(Guid transactionId)
     {
-        _ = await transactionRepository.GetByIdAsync(transactionId)
-            ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
+        _ = await transactionRepository.EnsureExistsAsync(transactionId);
 
         return await itemRepository.GetAllByTransactionIdAsync(transactionId);
     }
 
     public async Task<Position> UpdateAsync(Guid transactionId, Guid itemId, UpdatePositionDto dto)
     {
-        _ = await transactionRepository.GetByIdAsync(transactionId)
-            ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
+        _ = await transactionRepository.EnsureExistsAsync(transactionId);
 
-        var item = await itemRepository.GetByIdAsync(itemId)
-            ?? throw new KeyNotFoundException($"Item {itemId} not found");
+        var item = await itemRepository.EnsureExistsAsync(itemId);
 
         // Проверяем что позиция принадлежит этой транзакции
         if (item.TransactionId != transactionId)
@@ -78,21 +73,4 @@ public class PositionService(IPositionRepository itemRepository, ITransactionRep
 
         return item;
     }
-
-    //private async Task ValidateTotalAmount(Guid transactionId, decimal newItemAmount, Guid? excludeItemId = null)
-    //{
-    //    var transaction = await transactionRepository.GetByIdAsync(transactionId)
-    //        ?? throw new KeyNotFoundException($"Transaction {transactionId} not found");
-
-    //    var existingItems = await itemRepository.GetAllByTransactionIdAsync(transactionId);
-
-    //    // При обновлении исключаем старую сумму редактируемого item
-    //    var currentTotal = existingItems
-    //        .Where(i => i.Id != excludeItemId)
-    //        .Sum(i => i.Amount);
-
-    //    if (currentTotal + newItemAmount > Math.Abs(transaction.Amount))
-    //        throw new ArgumentException(
-    //            $"Сумма позиций ({currentTotal + newItemAmount}) превышает сумму транзакции ({Math.Abs(transaction.Amount)})");
-    //}
 }

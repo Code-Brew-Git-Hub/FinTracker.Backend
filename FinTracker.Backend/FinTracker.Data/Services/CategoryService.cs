@@ -33,14 +33,12 @@ public class CategoryService(ICategoryRepository categoryRepository) : ICategory
 
     public async Task<Category> GetByIdAsync(Guid id)
     {
-        return await categoryRepository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"Category {id} not found");
+        return await categoryRepository.EnsureExistsAsync(id);
     }
 
     public async Task<Category> UpdateAsync(Guid id, string name)
     {
-        var entity = await categoryRepository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"Category {id} not found");
+        var entity = await categoryRepository.EnsureExistsAsync(id);
 
         entity.Name = name;
         await categoryRepository.UpdateAsync(entity);

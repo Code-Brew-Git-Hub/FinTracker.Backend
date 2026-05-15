@@ -38,22 +38,19 @@ public class ScopeService(IScopeRepository scopeRepository,
 
     public async Task<Scope> GetByIdAsync(Guid id)
     {
-        return await scopeRepository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"Scope {id} not found");
+        return await scopeRepository.EnsureExistsAsync(id);
     }
 
     public async Task<List<Transaction>> GetTransactionsAsync(Guid scopeId)
     {
-        var scope = await scopeRepository.GetByIdAsync(scopeId)
-            ?? throw new KeyNotFoundException($"Scope {scopeId} not found");
+        var scope = await scopeRepository.EnsureExistsAsync(scopeId);
 
         return await transactionRepository.GetByScopeIdAsync(scopeId);
     }
 
     public async Task<Scope> UpdateAsync(Guid id, string name)
     {
-        var scope = await scopeRepository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"Scope {id} not found");
+        var scope = await scopeRepository.EnsureExistsAsync(id);
 
         scope.Name = name;
 

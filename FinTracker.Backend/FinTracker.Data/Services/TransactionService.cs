@@ -49,14 +49,12 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
 
     public async Task<Transaction> GetByIdAsync(Guid id, bool includeDeleted)
     {
-        return await transactionRepository.GetByIdAsync(id, includeDeleted)
-            ?? throw new KeyNotFoundException($"Transaction {id} not found");
+        return await transactionRepository.EnsureExistsAsync(id, includeDeleted);
     }
 
     public async Task<Transaction> UpdateAsync(Guid id, UpdateTransactionDto dto)
     {
-        var transaction = await transactionRepository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"Transaction {id} not found");
+        var transaction = await transactionRepository.EnsureExistsAsync(id);
 
         if (dto.Amount != null)
         {
@@ -105,8 +103,7 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
 
     public async Task SoftDeleteAsync(Guid id)
     {
-        var transaction = await transactionRepository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"Transaction {id} not found");
+        var transaction = await transactionRepository.EnsureExistsAsync(id);
         transaction.IsDeleted = true;
 
         await transactionRepository.UpdateAsync(transaction);
