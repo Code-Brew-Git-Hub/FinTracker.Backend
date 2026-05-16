@@ -22,7 +22,7 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
             Id = newId,
             Amount = dto.Amount,
             Currency = dto.Currency,
-            Date = dto.Date.ToUniversalTime(),
+            DateUtc = dto.Date.ToUniversalTime(),
             Description = dto.Description,
             Comment = dto.Comment,
             Type = dto.Amount < 0 ? TransactionType.Expense : TransactionType.Income,
@@ -64,7 +64,7 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
         if (dto.Currency != null)
             transaction.Currency = dto.Currency;
         if (dto.Date != null)
-            transaction.Date = (DateTime)dto.Date;
+            transaction.DateUtc = (DateTime)dto.Date;
         if (dto.Description != null)
             transaction.Description = dto.Description;
         if (dto.Comment != null)

@@ -27,7 +27,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .Property(t => t.Currency)
             .IsRequired();  // NOT NULL
         modelBuilder.Entity<Transaction>()
-            .Property(t => t.Date)
+            .Property(t => t.DateUtc)
             .IsRequired();  // NOT NULL
         modelBuilder.Entity<Transaction>()
             .Property(t => t.Type)

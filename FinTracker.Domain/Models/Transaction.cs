@@ -19,9 +19,9 @@ public class Transaction
     /// </summary>
     public string Currency { get; set; } = string.Empty;
     /// <summary>
-    /// Дата платежа
+    /// Дата платежа (UTC)
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateTime DateUtc { get; set; }
     /// <summary>
     /// Описание
     /// </summary>

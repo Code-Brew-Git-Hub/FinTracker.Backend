@@ -41,7 +41,7 @@ public class ImportService(TransactionParser parser,
             await transactionRepository.AddAsync(new Transaction
             {
                 Id = Guid.NewGuid(),
-                Date = p.Date.ToUniversalTime(),
+                DateUtc = p.Date.ToUniversalTime(),
                 Amount = p.Amount,
                 Currency = p.Currency,
                 Description = p.Description,

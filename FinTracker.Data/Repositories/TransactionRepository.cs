@@ -116,10 +116,10 @@ public class TransactionRepository(AppDbContext context) : ITransactionRepositor
         .AsQueryable();
 
         if (filter.DateFrom != null)
-            query = query.Where(t => t.Date >= filter.DateFrom);
+            query = query.Where(t => t.DateUtc >= filter.DateFrom);
 
         if (filter.DateTo != null)
-            query = query.Where(t => t.Date <= filter.DateTo);
+            query = query.Where(t => t.DateUtc <= filter.DateTo);
 
         if (filter.AmountMin != null)
             query = query.Where(t => t.Amount >= filter.AmountMin);
