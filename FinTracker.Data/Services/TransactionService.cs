@@ -98,12 +98,6 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
 
     public async Task<List<Transaction>> GetFilteredAsync(TransactionFilter filter, bool includeDeleted)
     {
-        if (filter.Page < 1)
-            throw new ArgumentException($"Page must be grater then zero, but was {filter.Page}");
-        if (filter.PageSize < 1)
-            throw new ArgumentException($"PageSize must be grater then zero, but was {filter.PageSize}");
-        if (filter.PageSize >= 1000)
-            throw new ArgumentException($"PageSize must be less then one thousand, but was {filter.PageSize}");
         return await transactionRepository.GetFilteredAsync(filter, includeDeleted);
     }
 

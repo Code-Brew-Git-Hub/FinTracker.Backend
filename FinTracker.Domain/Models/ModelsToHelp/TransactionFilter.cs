@@ -1,4 +1,5 @@
 ﻿using FinTracker.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace FinTracker.Domain.Models.ModelsToHelp;
 /// <summary>
@@ -41,6 +42,7 @@ public class TransactionFilter
     /// <summary>
     /// Быстрый поиск: поиск в описании, ... (пока все)
     /// </summary>
+    [MaxLength(50, ErrorMessage = "Поисковый запрос не должен превышать 50 символов")]
     public string? Search { get; set; }
     /// <summary>
     /// Показать транзакции без группы
@@ -49,9 +51,11 @@ public class TransactionFilter
     /// <summary>
     /// Номер страницы
     /// </summary>
+    [Range(1, 1000, ErrorMessage = "Номер страницы должен быть больше 0 и меньше 1000")]
     public int Page { get; set; } = 1;
     /// <summary>
     /// Количество транзакий на странице
     /// </summary>
-    public int PageSize { get; set; } = 50;
+    [Range(1, 200, ErrorMessage = "Размер страницы должен быть от 1 до 200")]
+    public int PageSize { get; set; } = 25;
 }
