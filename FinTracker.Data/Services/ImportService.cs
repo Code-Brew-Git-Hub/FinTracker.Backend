@@ -14,14 +14,16 @@ public class ImportService(TransactionParser parser,
     public async Task<ImportResultDto> ImportAsync(StreamReader reader, string filename)
     {
         var parseResult = await parser.Parse(reader, filename);
+        var parseResultTransactionsCount = 0;
 
-        if (!parseResult.Transactions.Any() && parseResult.Errors.Any())
+        if (parseResult.Errors.Any())
             throw new ArgumentException(parseResult.Errors.First().Reason);
 
         var categoryCache = new Dictionary<string, Category>();
 
         foreach (var p in parseResult.Transactions)
         {
+            parseResultTransactionsCount++;
             var categoryName = p.CategoryName;
 
             if (!categoryCache.TryGetValue(categoryName, out var category))
@@ -50,14 +52,17 @@ public class ImportService(TransactionParser parser,
                 Category = category,
                 IsDeleted = false
             });
+
+            if (parseResultTransactionsCount % 100 == 0)
+                await transactionRepository.SaveChangesAsync();
         }
 
         await transactionRepository.SaveChangesAsync();
 
         return new ImportResultDto
         {
-            Total = parseResult.Transactions.Count + parseResult.Errors.Count,
-            Imported = parseResult.Transactions.Count,
+            Total = parseResultTransactionsCount + parseResult.Errors.Count,
+            Imported = parseResultTransactionsCount,
             Errors = parseResult.Errors.Select(e => new ImportErrorDto
             {
                 Row = e.Row,
