@@ -1,12 +1,10 @@
 ﻿using FinTracker.Domain.Interfaces.Repositories;
 using FinTracker.Domain.Interfaces.Services;
 using FinTracker.Domain.Models;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace FinTracker.Data.Services;
 
-public class CategoryService(ICategoryRepository categoryRepository,
-    IMemoryCache memoryCache) : ICategoryService
+public class CategoryService(ICategoryRepository categoryRepository) : ICategoryService
 {
     public async Task<Category> CreateAsync(string name)
     {
@@ -19,18 +17,11 @@ public class CategoryService(ICategoryRepository categoryRepository,
         await categoryRepository.AddAsync(newCategory);
         await categoryRepository.SaveChangesAsync();
 
-        memoryCache.Remove(name);
-
         return newCategory;
     }
 
     public async Task DeleteAsync(Guid id)
     {
-        var category = await categoryRepository.GetByIdAsync(id);
-
-        if (category != null)
-            memoryCache.Remove(category.Name);
-
         await categoryRepository.DeleteAsync(id);
         await categoryRepository.SaveChangesAsync();
     }
@@ -49,14 +40,9 @@ public class CategoryService(ICategoryRepository categoryRepository,
     {
         var entity = await categoryRepository.EnsureExistsAsync(id);
 
-        var oldName = entity.Name;
-
         entity.Name = name;
         await categoryRepository.UpdateAsync(entity);
         await categoryRepository.SaveChangesAsync();
-
-        memoryCache.Remove(oldName);
-        memoryCache.Remove(name);
 
         return entity;
     }
