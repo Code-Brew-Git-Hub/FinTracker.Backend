@@ -16,6 +16,7 @@ public class Program
         builder.Services.AddServices();
         builder.Services.AddParser();
         builder.Services.AddContext();
+        builder.Services.AddMemoryCache();
         MappingConfig.Configure();
         builder.Services.AddMapster();
         builder.Services.AddControllers();
