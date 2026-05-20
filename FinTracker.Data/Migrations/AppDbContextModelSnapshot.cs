@@ -41,6 +41,36 @@ namespace FinTracker.Data.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("FinTracker.Domain.Models.Position", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("numeric(18,4)");
+
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("TransactionId");
+
+                    b.ToTable("TransactionItems");
+                });
+
             modelBuilder.Entity("FinTracker.Domain.Models.Scope", b =>
                 {
                     b.Property<Guid>("Id")
@@ -99,7 +129,7 @@ namespace FinTracker.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime>("DateUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
@@ -122,36 +152,6 @@ namespace FinTracker.Data.Migrations
                     b.HasIndex("ScopeId");
 
                     b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("FinTracker.Domain.Models.TransactionItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
-
-                    b.Property<Guid?>("CategoryId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("TransactionId");
-
-                    b.ToTable("TransactionItems");
                 });
 
             modelBuilder.Entity("FinTracker.Domain.Models.TransactionLink", b =>
@@ -199,6 +199,24 @@ namespace FinTracker.Data.Migrations
                     b.ToTable("TransactionTags");
                 });
 
+            modelBuilder.Entity("FinTracker.Domain.Models.Position", b =>
+                {
+                    b.HasOne("FinTracker.Domain.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("FinTracker.Domain.Models.Transaction", "Transaction")
+                        .WithMany("Positions")
+                        .HasForeignKey("TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Transaction");
+                });
+
             modelBuilder.Entity("FinTracker.Domain.Models.Transaction", b =>
                 {
                     b.HasOne("FinTracker.Domain.Models.Category", "Category")
@@ -214,24 +232,6 @@ namespace FinTracker.Data.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Scope");
-                });
-
-            modelBuilder.Entity("FinTracker.Domain.Models.TransactionItem", b =>
-                {
-                    b.HasOne("FinTracker.Domain.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("FinTracker.Domain.Models.Transaction", "Transaction")
-                        .WithMany("Items")
-                        .HasForeignKey("TransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("FinTracker.Domain.Models.TransactionLinkEntry", b =>
@@ -256,7 +256,7 @@ namespace FinTracker.Data.Migrations
             modelBuilder.Entity("FinTracker.Domain.Models.TransactionTag", b =>
                 {
                     b.HasOne("FinTracker.Domain.Models.Tag", "Tag")
-                        .WithMany("TransactionTags")
+                        .WithMany()
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -282,16 +282,11 @@ namespace FinTracker.Data.Migrations
                     b.Navigation("Transactions");
                 });
 
-            modelBuilder.Entity("FinTracker.Domain.Models.Tag", b =>
-                {
-                    b.Navigation("TransactionTags");
-                });
-
             modelBuilder.Entity("FinTracker.Domain.Models.Transaction", b =>
                 {
-                    b.Navigation("Items");
-
                     b.Navigation("LinkEntries");
+
+                    b.Navigation("Positions");
 
                     b.Navigation("TransactionTags");
                 });

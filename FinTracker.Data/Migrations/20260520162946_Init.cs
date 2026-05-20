@@ -48,16 +48,28 @@ namespace FinTracker.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TransactionLinks",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransactionLinks", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Transactions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Amount = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: false),
                     Currency = table.Column<string>(type: "text", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Comment = table.Column<string>(type: "text", nullable: true),
-                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
                     ScopeId = table.Column<Guid>(type: "uuid", nullable: true)
@@ -76,6 +88,57 @@ namespace FinTracker.Data.Migrations
                         column: x => x.ScopeId,
                         principalTable: "Scopes",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TransactionItems",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: false),
+                    TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransactionItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TransactionItems_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_TransactionItems_Transactions_TransactionId",
+                        column: x => x.TransactionId,
+                        principalTable: "Transactions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TransactionLinkEntries",
+                columns: table => new
+                {
+                    TransactionLinkId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TransactionId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransactionLinkEntries", x => new { x.TransactionLinkId, x.TransactionId });
+                    table.ForeignKey(
+                        name: "FK_TransactionLinkEntries_TransactionLinks_TransactionLinkId",
+                        column: x => x.TransactionLinkId,
+                        principalTable: "TransactionLinks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TransactionLinkEntries_Transactions_TransactionId",
+                        column: x => x.TransactionId,
+                        principalTable: "Transactions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -121,6 +184,21 @@ namespace FinTracker.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_TransactionItems_CategoryId",
+                table: "TransactionItems",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransactionItems_TransactionId",
+                table: "TransactionItems",
+                column: "TransactionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransactionLinkEntries_TransactionId",
+                table: "TransactionLinkEntries",
+                column: "TransactionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_CategoryId",
                 table: "Transactions",
                 column: "CategoryId");
@@ -140,7 +218,16 @@ namespace FinTracker.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "TransactionItems");
+
+            migrationBuilder.DropTable(
+                name: "TransactionLinkEntries");
+
+            migrationBuilder.DropTable(
                 name: "TransactionTags");
+
+            migrationBuilder.DropTable(
+                name: "TransactionLinks");
 
             migrationBuilder.DropTable(
                 name: "Tags");
