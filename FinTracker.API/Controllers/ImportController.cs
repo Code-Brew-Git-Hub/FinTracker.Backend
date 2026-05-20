@@ -1,13 +1,15 @@
 ﻿using FinTracker.Domain.Dtos.Import;
 using FinTracker.Domain.Dtos.Universal;
 using FinTracker.Domain.Interfaces.Services;
+using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinTracker.API.Controllers;
 
 [ApiController]
 [Route("api/import")]
-public class ImportController(IImportService importService) : ControllerBase
+public class ImportController(IImportService importService,
+    IMapper mapper) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<ApiResponse<FileImportResultDto>>> UploadFile(IFormFileCollection files)
