@@ -20,8 +20,6 @@ public class CategoryService(
         await categoryRepository.AddAsync(newCategory);
         await categoryRepository.SaveChangesAsync();
 
-        memoryCache.Remove(name);
-
         return newCategory;
     }
 
