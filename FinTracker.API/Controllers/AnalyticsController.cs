@@ -13,24 +13,37 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
     [HttpGet("summary")]
     public async Task<ActionResult<ApiResponse<AnalyticsSummaryDto>>> GetSummary([FromQuery] AnalyticsFilterDto filter)
     {
-        throw new NotImplementedException();
+        var summary = await analyticsService.GetSummaryAsync(filter);
+        return Ok(ApiResponse.Ok(summary));
     }
 
     [HttpGet("by-category")]
         public async Task<ActionResult<ApiResponse<CategoryStatDto[]>>> GetByCategory([FromQuery] AnalyticsFilterDto filter)
     {
-        throw new NotImplementedException();
+        var stats = await analyticsService.GetByCategoryAsync(filter);
+        return Ok(ApiResponse.Ok(stats));
+    }
+
+    [HttpGet("by-scope")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<ScopeStatDto>>>> GetByScope([FromQuery] AnalyticsFilterDto filter)
+    {
+        var stats = await analyticsService.GetByScopeAsync(filter);
+        return Ok(ApiResponse.Ok(stats));
     }
 
     [HttpGet("by-tag")]
         public async Task<ActionResult<ApiResponse<TagStatDto[]>>> GetByTag([FromQuery] AnalyticsFilterDto filter)
     {
-        throw new NotImplementedException();
+        var stats = await analyticsService.GetByTagAsync(filter);
+        return Ok(ApiResponse.Ok(stats));
     }
 
     [HttpGet("by-time")]
-        public async Task<ActionResult<ApiResponse<TimeStatDto[]>>> GetByTime([FromQuery] AnalyticsFilterDto filter, [FromQuery] TimeGrouping grouping)
+        public async Task<ActionResult<ApiResponse<TimeStatDto[]>>> GetByTime(
+        [FromQuery] AnalyticsFilterDto filter, 
+        [FromQuery] TimeGrouping grouping = TimeGrouping.Month)
     {
-        throw new NotImplementedException();
+        var stats = await analyticsService.GetByTimeAsync(filter, grouping);
+        return Ok(ApiResponse.Ok(stats));
     }
 }
