@@ -1,0 +1,40 @@
+﻿using FinTracker.Domain.Dtos.Analytics;
+using FinTracker.Domain.Enums;
+using FinTracker.Domain.Interfaces.Repositories;
+using FinTracker.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace FinTracker.Data.Repositories;
+
+public class AnalyticsRepository(AppDbContext context) : IAnalyticsRepository
+{
+    public async Task<List<Transaction>> GetFilteredAsync(AnalyticsFilterDto filter)
+    {
+        var query = context.Transactions
+            .Include(t => t.TransactionTags).ThenInclude(tt => tt.Tag)
+            .Include(t => t.Category)
+            .Include(t => t.Scope)
+            .Include(t => t.LinkEntries).ThenInclude(le => le.TransactionLink)
+            .AsQueryable();
+
+        if (filter.DateFrom != null)
+            query = query.Where(t => t.DateUtc >= filter.DateFrom);
+
+        if (filter.DateTo != null)
+            query = query.Where(t => t.DateUtc <= filter.DateTo);
+
+        if (filter.ExcludeScopeIds != null && filter.ExcludeScopeIds.Any())
+            query = query.Where(t => t.ScopeId == null ||
+                                     !filter.ExcludeScopeIds.Contains(t.ScopeId.Value));
+
+        if (filter.ExcludeTransfers)
+            query = query.Where(t => t.LinkEntries
+                .All(le => le.TransactionLink.Type != TransactionLinkType.Transfer));
+
+        if (filter.ExcludeCompensations)
+            query = query.Where(t => t.LinkEntries
+                .All(le => le.TransactionLink.Type != TransactionLinkType.Compensation));
+
+        return await query.ToListAsync();
+    }
+}
