@@ -23,6 +23,25 @@ public class AnalyticsRepository(AppDbContext context) : IAnalyticsRepository
         if (filter.DateTo != null)
             query = query.Where(t => t.DateUtc <= filter.DateTo);
 
+        if (filter.AmountMin != null)
+            query = query.Where(t => t.Amount >= filter.AmountMin || t.Amount <= -filter.AmountMin);
+
+        if (filter.AmountMax != null)
+            query = query.Where(t => t.Amount <= filter.AmountMax && t.Amount >= -filter.AmountMax);
+
+        if (filter.CategoryId != null)
+            query = query.Where(t => t.CategoryId == filter.CategoryId);
+
+        if (filter.TagIds != null && filter.TagIds.Any())
+            query = query.Where(t => t.TransactionTags
+                .Any(tt => filter.TagIds.Contains(tt.TagId)));
+
+        if (filter.Type != null)
+            query = query.Where(t => t.Type == filter.Type);
+
+        if (filter.ScopeId != null)
+            query = query.Where(t => t.ScopeId == filter.ScopeId);
+
         if (filter.ExcludeScopeIds != null && filter.ExcludeScopeIds.Any())
             query = query.Where(t => t.ScopeId == null ||
                                      !filter.ExcludeScopeIds.Contains(t.ScopeId.Value));
