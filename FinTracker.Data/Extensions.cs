@@ -34,6 +34,7 @@ public static class Extensions
         serviceCollection.AddScoped<ITagRepository, TagRepository>();
         serviceCollection.AddScoped<IPositionRepository, PositionRepository>();
         serviceCollection.AddScoped<ILinkRepository, LinkRepository>();
+        serviceCollection.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 
         return serviceCollection;
     }
