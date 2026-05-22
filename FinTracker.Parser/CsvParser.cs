@@ -9,14 +9,23 @@ public class CsvParser
 {
     private static readonly string TBankHeaders = "\"Дата операции\";\"Дата платежа\";\"Номер карты\";\"Статус\";\"Сумма операции\";\"Валюта операции\";\"Сумма платежа\";\"Валюта платежа\";\"Кэшбэк\";\"Категория\";\"MCC\";\"Описание\";\"Бонусы (включая кэшбэк)\";\"Округление на инвесткопилку\";\"Сумма операции с округлением\"";
     private static readonly string AlfaBankHeaders = "operationDate,transactionDate,accountName,accountNumber,cardName,cardNumber,merchant,amount,currency,status,category,mcc,type,comment,bonusValue,bonusTitle";
-    
-    private static readonly CsvConfiguration Config = new CsvConfiguration(CultureInfo.GetCultureInfo("ru-RU")) 
+
+    private static readonly CsvConfiguration TBankConfig = new CsvConfiguration(CultureInfo.GetCultureInfo("ru-RU"))
     {
         HasHeaderRecord = true,
         IgnoreBlankLines = true,
         TrimOptions = TrimOptions.Trim,
         MissingFieldFound = null,
         Delimiter = ";"
+    };
+
+    private static readonly CsvConfiguration AlfaBankConfig = new CsvConfiguration(CultureInfo.GetCultureInfo("ru-RU"))
+    {
+        HasHeaderRecord = true,
+        IgnoreBlankLines = true,
+        TrimOptions = TrimOptions.Trim,
+        MissingFieldFound = null,
+        Delimiter = ","
     };
 
     public async Task<ParseResult> ParseCSV(StreamReader reader)
@@ -31,13 +40,13 @@ public class CsvParser
         {
             if (canSeek) baseStream.Position = originalPosition;
             reader.DiscardBufferedData();
-            return await ParseWithMap<TBankCsvMap>(new CsvReader(reader, Config));
+            return await ParseWithMap<TBankCsvMap>(new CsvReader(reader, TBankConfig));
         }
         else if (firstLine == AlfaBankHeaders)
         {
             if (canSeek) baseStream.Position = originalPosition;
             reader.DiscardBufferedData();
-            return await ParseWithMap<AlfaBankCsvMap>(new CsvReader(reader, Config));
+            return await ParseWithMap<AlfaBankCsvMap>(new CsvReader(reader, AlfaBankConfig));
         }
         else
         {

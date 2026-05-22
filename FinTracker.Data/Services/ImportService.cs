@@ -1,4 +1,6 @@
-﻿using FinTracker.Domain.Dtos.Import;
+﻿using FinTracker.Domain.Dtos.Categories;
+using FinTracker.Domain.Dtos.Import;
+using FinTracker.Domain.Dtos.Transactions;
 using FinTracker.Domain.Enums;
 using FinTracker.Domain.Interfaces.Repositories;
 using FinTracker.Domain.Interfaces.Services;
@@ -20,15 +22,37 @@ public class ImportService(TransactionParser parser,
     public async Task<ImportResultDto> ImportAsync(StreamReader reader, string filename)
     {
         var parseResult = await parser.Parse(reader, filename);
-        var parseResultTransactionsCount = 0;
+
+        var importedCount = 0;
+        var incomeCount = 0;
+        var expenseCount = 0;
+        var categories = new Dictionary<string, int>();
+        var savedTransactions = new List<TransactionPreviewDto>();
+        var minDate = DateTime.MaxValue;
+        var maxDate = DateTime.MinValue;
 
         if (parseResult.Errors.Any())
             throw new ArgumentException(parseResult.Errors.First().Reason);
 
         foreach (var p in parseResult.Transactions)
         {
-            parseResultTransactionsCount++;
+            importedCount++;
+
+            if (p.Amount < 0)
+                expenseCount++;
+            else
+                incomeCount++;
+
+            if (p.Date < minDate)
+                minDate = p.Date;
+            if (p.Date > maxDate)
+                maxDate = p.Date;
+
             var categoryName = p.CategoryName;
+            if (categories.ContainsKey(categoryName))
+                categories[categoryName]++;
+            else
+                categories[categoryName] = 1;
 
             if (!memoryCache.TryGetValue(categoryName, out Category category))
             {
@@ -44,7 +68,7 @@ public class ImportService(TransactionParser parser,
                 memoryCache.Set(categoryName, category, cacheEntryOptions);
             }
 
-            await transactionRepository.AddAsync(new Transaction
+            var newTransaction = new Transaction
             {
                 Id = Guid.NewGuid(),
                 DateUtc = p.Date.ToUniversalTime(),
@@ -55,23 +79,46 @@ public class ImportService(TransactionParser parser,
                 CategoryId = category.Id,
                 Category = category,
                 IsDeleted = false
-            });
+            };
 
-            if (parseResultTransactionsCount % 100 == 0)
+            await transactionRepository.AddAsync(newTransaction);
+
+            if (importedCount % 100 == 0)
                 await transactionRepository.SaveChangesAsync();
+
+            if (savedTransactions.Count < 5)
+                savedTransactions.Add(new TransactionPreviewDto
+                {
+                    Amount = newTransaction.Amount,
+                    DateUtc = newTransaction.DateUtc,
+                    Description = newTransaction.Description,
+                    Category = categoryName
+                });
         }
 
         await transactionRepository.SaveChangesAsync();
 
         return new ImportResultDto
         {
-            Total = parseResultTransactionsCount + parseResult.Errors.Count,
-            Imported = parseResultTransactionsCount,
+            Total = importedCount + parseResult.Errors.Count,
+            Imported = importedCount,
             Errors = parseResult.Errors.Select(e => new ImportErrorDto
             {
                 Row = e.Row,
                 Reason = e.Reason
-            }).ToList()
+            }).ToList(),
+            Categories = categories
+                .Select(c => new CategoryImportStatDto { Name = c.Key, Count = c.Value })
+                .OrderByDescending(c => c.Count)
+                .ToList(),
+            Period = importedCount > 0 ? new DateRangeDto() 
+            { 
+                From = minDate, 
+                To = maxDate 
+            } : null,
+            IncomeCount = incomeCount,
+            ExpenseCount = expenseCount,
+            Preview = savedTransactions
         };
     }
 }
