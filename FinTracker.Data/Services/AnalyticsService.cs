@@ -26,8 +26,11 @@ public class AnalyticsService(IAnalyticsRepository analyticsRepository) : IAnaly
                 Category =  new CategoryDto() { Id = g.Key.Id, Name = g.Key.Name },
                 Total = g.Sum(t => Math.Abs(t.Amount)),
                 Count = g.Count(),
+                // Процент считается только если есть расходы, чтобы избежать деления на ноль
                 Percent = totalExpense > 0
+                    // Сумма расходов по категории / общая сумма расходов * 100, округляем до 2 знаков
                     ? Math.Round(g.Sum(t => Math.Abs(t.Amount)) / totalExpense * 100, 2)
+                    // Сумма расходов по категории / общая сумма расходов * 100, округляем до 2 знаков
                     : 0
             })
             .OrderByDescending(x => x.Total)
