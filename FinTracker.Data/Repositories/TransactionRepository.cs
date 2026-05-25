@@ -164,6 +164,11 @@ public class TransactionRepository(AppDbContext context) : ITransactionRepositor
         await context.SaveChangesAsync();
     }
 
+    public void ClearChangeTracker()
+    {
+        context.ChangeTracker.Clear();
+    }
+
     public async Task UpdateAsync(Transaction transaction)
     {
         context.Transactions
