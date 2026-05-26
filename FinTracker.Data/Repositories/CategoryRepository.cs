@@ -39,6 +39,17 @@ public class CategoryRepository(AppDbContext context) : ICategoryRepository
             .FirstOrDefaultAsync(category => category.Name == name);
     }
 
+    public async Task<List<Category>> GetByNamesAsync(IEnumerable<string> names)
+    {
+        var nameList = names.Distinct().ToList();
+        if (nameList.Count == 0)
+            return [];
+
+        return await context.Categories
+            .Where(category => nameList.Contains(category.Name))
+            .ToListAsync();
+    }
+
     public async Task SaveChangesAsync()
     {
         await context.SaveChangesAsync();

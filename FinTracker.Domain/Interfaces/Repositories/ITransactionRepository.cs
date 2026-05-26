@@ -10,4 +10,5 @@ public interface ITransactionRepository : IRepository<Transaction>
     Task<List<Transaction>> GetFilteredAsync(TransactionFilter filter, bool includeDeleted);
     Task BulkUpdateAsync(BulkUpdateDto dto);
     Task<List<Transaction>> GetByScopeIdAsync(Guid scopeId);
+    void ClearChangeTracker();
 }
