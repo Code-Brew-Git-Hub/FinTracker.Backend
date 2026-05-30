@@ -136,6 +136,7 @@ jobs:
           dotnet ef database update \
             --project ../FinTracker.Data/FinTracker.Data.csproj \
             --startup-project FinTracker.API.csproj \
+            --configuration Release \
             --no-build \
             --verbose
 
