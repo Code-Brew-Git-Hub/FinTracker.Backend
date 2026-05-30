@@ -11,7 +11,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Tag> Tags { get; set; }
     public DbSet<TransactionTag> TransactionTags { get; set; }
     public DbSet<Position> TransactionItems { get; set; }
-    public DbSet<TransactionLink> TransactionLinks {  get; set; }
+    public DbSet<TransactionLink> TransactionLinks { get; set; }
     public DbSet<TransactionLinkEntry> TransactionLinkEntries { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

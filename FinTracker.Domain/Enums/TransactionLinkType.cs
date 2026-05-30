@@ -3,7 +3,7 @@
 /// <summary>
 /// Тип связи транзакций: компенсация / перевод
 /// </summary>
-public enum TransactionLinkType 
+public enum TransactionLinkType
 {
     /// <summary>
     /// Компенсация (дал в долг другу, он вернул через неделю)
