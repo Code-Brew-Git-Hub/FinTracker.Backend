@@ -6,7 +6,7 @@ namespace FinTracker.Data;
 public static class RepositoryExtensions
 {
     public static async Task<T> EnsureExistsAsync<T>(
-        this IRepository<T> repository, Guid id) 
+        this IRepository<T> repository, Guid id)
         where T : class
     {
         var entity = await repository.GetByIdAsync(id);
