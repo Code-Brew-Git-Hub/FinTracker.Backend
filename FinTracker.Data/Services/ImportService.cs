@@ -105,10 +105,10 @@ public class ImportService(TransactionParser parser,
                 .Select(c => new CategoryImportStatDto { Name = c.Key, Count = c.Value })
                 .OrderByDescending(c => c.Count)
                 .ToList(),
-            Period = importedCount > 0 ? new DateRangeDto() 
-            { 
-                From = minDate, 
-                To = maxDate 
+            Period = importedCount > 0 ? new DateRangeDto()
+            {
+                From = minDate,
+                To = maxDate
             } : null,
             IncomeCount = incomeCount,
             ExpenseCount = expenseCount,

@@ -8,7 +8,7 @@ namespace FinTracker.API.Controllers;
 
 [ApiController]
 [Route("api/transactions/{transactionId:guid}/items")]
-public class PositionsController(IPositionService itemService, 
+public class PositionsController(IPositionService itemService,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]

@@ -18,7 +18,7 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
     }
 
     [HttpGet("by-category")]
-        public async Task<ActionResult<ApiResponse<CategoryStatDto[]>>> GetByCategory([FromQuery] AnalyticsFilterDto filter)
+    public async Task<ActionResult<ApiResponse<CategoryStatDto[]>>> GetByCategory([FromQuery] AnalyticsFilterDto filter)
     {
         var stats = await analyticsService.GetByCategoryAsync(filter);
         return Ok(ApiResponse.Ok(stats));
@@ -32,15 +32,15 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
     }
 
     [HttpGet("by-tag")]
-        public async Task<ActionResult<ApiResponse<TagStatDto[]>>> GetByTag([FromQuery] AnalyticsFilterDto filter)
+    public async Task<ActionResult<ApiResponse<TagStatDto[]>>> GetByTag([FromQuery] AnalyticsFilterDto filter)
     {
         var stats = await analyticsService.GetByTagAsync(filter);
         return Ok(ApiResponse.Ok(stats));
     }
 
     [HttpGet("by-time")]
-        public async Task<ActionResult<ApiResponse<TimeStatDto[]>>> GetByTime(
-        [FromQuery] AnalyticsFilterDto filter, 
+    public async Task<ActionResult<ApiResponse<TimeStatDto[]>>> GetByTime(
+        [FromQuery] AnalyticsFilterDto filter,
         [FromQuery] TimeGrouping grouping = TimeGrouping.Month)
     {
         var stats = await analyticsService.GetByTimeAsync(filter, grouping);

@@ -39,7 +39,7 @@ public class TransactionRepository(AppDbContext context) : ITransactionRepositor
                 if (transaction.ScopeId == null)
                     throw new ArgumentException($"Transaction {transaction.Id} doesn't have scope");
                 transaction.ScopeId = null;
-            }                
+            }
 
             if (dto.ReplaceTagIds != null)
             {

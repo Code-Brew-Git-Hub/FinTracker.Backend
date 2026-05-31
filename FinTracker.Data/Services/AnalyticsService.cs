@@ -23,7 +23,7 @@ public class AnalyticsService(IAnalyticsRepository analyticsRepository) : IAnaly
             .GroupBy(t => t.Category)
             .Select(g => new CategoryStatDto
             {
-                Category =  new CategoryDto() { Id = g.Key.Id, Name = g.Key.Name },
+                Category = new CategoryDto() { Id = g.Key.Id, Name = g.Key.Name },
                 Total = g.Sum(t => Math.Abs(t.Amount)),
                 Count = g.Count(),
                 // Процент считается только если есть расходы, чтобы избежать деления на ноль

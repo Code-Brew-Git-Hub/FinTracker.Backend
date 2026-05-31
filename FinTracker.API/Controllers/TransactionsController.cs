@@ -12,9 +12,9 @@ namespace FinTracker.API.Controllers;
 public class TransactionsController(ITransactionService transactionService,
     IMapper mapper) : ControllerBase
 {
-    
+
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<TransactionDto[]>>> GetAll([FromQuery] TransactionFilter filter, [FromQuery] bool includeDeleted=false)
+    public async Task<ActionResult<ApiResponse<TransactionDto[]>>> GetAll([FromQuery] TransactionFilter filter, [FromQuery] bool includeDeleted = false)
     {
         var transactions = await transactionService.GetFilteredAsync(filter, includeDeleted);
 

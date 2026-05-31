@@ -36,7 +36,7 @@ public class CsvParser
 
         var firstLine = await reader.ReadLineAsync();
 
-        if(firstLine == TBankHeaders)
+        if (firstLine == TBankHeaders)
         {
             if (canSeek) baseStream.Position = originalPosition;
             reader.DiscardBufferedData();
@@ -102,7 +102,7 @@ public class CsvParser
     private ParseError? Validate(ParsedTransaction t, int row)
     {
         if (string.IsNullOrWhiteSpace(t.CategoryName))
-            return new ParseError { Row = row , Reason = "Категория не указана"};
+            return new ParseError { Row = row, Reason = "Категория не указана" };
         if (string.IsNullOrWhiteSpace(t.Currency))
             return new ParseError { Row = row, Reason = "Валюта не указана" };
 
