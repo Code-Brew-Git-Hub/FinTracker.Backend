@@ -172,7 +172,7 @@ jobs:
     name: "📦 Publish Release Artifact"
     runs-on: ubuntu-24.04
     needs: [lint, build-and-test]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' || github.event_name == 'pull_request'
 
     permissions:
       contents: read
@@ -217,7 +217,7 @@ jobs:
     name: "🐳 Build & Push Docker Image"
     runs-on: ubuntu-24.04
     needs: [lint, build-and-test]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' || github.event_name == 'pull_request'
 
     permissions:
       contents: read
@@ -251,7 +251,7 @@ jobs:
         with:
           context: .
           dockerfile: ./Dockerfile
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
