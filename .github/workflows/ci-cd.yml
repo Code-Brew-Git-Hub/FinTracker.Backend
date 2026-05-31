@@ -1,4 +1,3 @@
-
 name: FinTracker Backend CI/CD
 
 on:
@@ -20,9 +19,9 @@ concurrency:
 
 env:
   DOTNET_VERSION: "10.0.x"
-  SOLUTION_FILE: "FinTracker.Backend.slnx" 
-  DOTNET_CLI_TELEMETRY_OPTOUT: "true" 
-  DOTNET_NOLOGO: "true"                     
+  SOLUTION_FILE: "FinTracker.Backend.slnx"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+  DOTNET_NOLOGO: "true"
 
 jobs:
   lint:
@@ -51,14 +50,14 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore "${{ env.SOLUTION_FILE }}"
-        
+
       - name: Verify code formatting
         run: |
           dotnet format "${{ env.SOLUTION_FILE }}" \
             --verify-no-changes \
             --severity warn \
             --verbosity diagnostic
-          
+
       - name: Build with Roslyn analyzers
         run: |
           dotnet build "${{ env.SOLUTION_FILE }}" \
@@ -74,7 +73,7 @@ jobs:
 
     permissions:
       contents: read
-      checks: write 
+      checks: write
 
     services:
       postgres:
@@ -197,7 +196,7 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore "${{ env.SOLUTION_FILE }}"
-        
+
       - name: Publish application
         run: |
           dotnet publish "FinTracker.API/FinTracker.API.csproj" \
@@ -205,6 +204,7 @@ jobs:
             --configuration Release \
             --output "${{ github.workspace }}/publish" \
             --verbosity minimal
+
       - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
@@ -212,3 +212,47 @@ jobs:
           path: "${{ github.workspace }}/publish/"
           retention-days: 30
           if-no-files-found: error
+
+  docker-publish:
+    name: "🐳 Build & Push Docker Image"
+    runs-on: ubuntu-24.04
+    needs: [lint, build-and-test]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract Docker metadata (tags & labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/fintracker-backend
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,prefix=sha-,format=short
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          dockerfile: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
