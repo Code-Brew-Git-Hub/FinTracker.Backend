@@ -13,10 +13,10 @@ public static class Extensions
     public static IServiceCollection AddContext(this IServiceCollection serviceCollection)
     {
         var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
-        var dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+        var dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "5433";
         var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "FinTrackerDb";
         var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
-        var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "123456";
+        var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "67676767";
 
         serviceCollection.AddDbContext<AppDbContext>(x =>
         {
