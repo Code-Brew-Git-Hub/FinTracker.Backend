@@ -42,7 +42,7 @@ public class Program
             await db.Database.MigrateAsync();
         }
 
-        // Обработка ошибочек
+        // Обработка ошибок
         app.UseExceptionHandler(appBuilder => appBuilder.Run(async context =>
         {
             var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
