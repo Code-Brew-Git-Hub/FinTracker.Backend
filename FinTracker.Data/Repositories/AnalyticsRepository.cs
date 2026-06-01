@@ -15,6 +15,7 @@ public class AnalyticsRepository(AppDbContext context) : IAnalyticsRepository
             .Include(t => t.Category)
             .Include(t => t.Scope)
             .Include(t => t.LinkEntries).ThenInclude(le => le.TransactionLink)
+            .Where(t => !t.IsDeleted)
             .AsQueryable();
 
         if (filter.DateFrom != null)
