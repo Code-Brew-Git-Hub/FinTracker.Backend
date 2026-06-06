@@ -12,7 +12,9 @@ public class ImportController(IImportService importService,
     IMapper mapper) : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<FileImportResultDto>>> UploadFile(IFormFileCollection files)
+    public async Task<ActionResult<ApiResponse<FileImportResultDto>>> UploadFile(
+        IFormFileCollection files,
+        [FromQuery] bool runValidation = false)
     {
         if (files is null || files.Count == 0)
             return BadRequest(ApiResponse<object>.Fail("Файлы не переданы"));
@@ -37,7 +39,7 @@ public class ImportController(IImportService importService,
                 using var stream = file.OpenReadStream();
                 using var reader = new StreamReader(stream);
 
-                var result = await importService.ImportAsync(reader, file.FileName);
+                var result = await importService.ImportAsync(reader, file.FileName, runValidation);
 
                 results.Add(new FileImportResultDto
                 {
