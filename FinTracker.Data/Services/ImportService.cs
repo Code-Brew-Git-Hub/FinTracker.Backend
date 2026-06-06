@@ -25,7 +25,7 @@ public class ImportService(TransactionParser parser,
     {
         var parseResult = await parser.Parse(reader, filename);
 
-        if (parseResult.Errors.Any())
+        if (!parseResult.Transactions.Any() && parseResult.Errors.Any())
             throw new ArgumentException(parseResult.Errors.First().Reason);
 
         var pendingCategoryNames = new HashSet<string>();
