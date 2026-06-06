@@ -20,6 +20,14 @@ public class ValidationIssueRepository(AppDbContext context) : IValidationIssueR
             .FirstOrDefaultAsync(i => i.Id == id);
     }
 
+    public async Task<List<ValidationIssue>> GetByRuleIdAsync(Guid ruleId)
+    {
+        return await context.ValidationIssues
+            .Include(i => i.Transactions)
+            .Where(i => i.RuleId == ruleId)
+            .ToListAsync();
+    }
+
     public async Task<List<ValidationIssue>> GetFilteredAsync(ValidationIssueFilter filter)
     {
         var query = context.ValidationIssues

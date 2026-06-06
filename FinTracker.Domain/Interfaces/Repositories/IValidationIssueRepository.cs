@@ -7,6 +7,7 @@ public interface IValidationIssueRepository
 {
     Task<ValidationIssue?> GetByIdAsync(Guid id);
     Task<List<ValidationIssue>> GetFilteredAsync(ValidationIssueFilter filter);
+    Task<List<ValidationIssue>> GetByRuleIdAsync(Guid ruleId);
     Task AddAsync(ValidationIssue entity);
     Task UpdateAsync(ValidationIssue entity);
     Task SaveChangesAsync();

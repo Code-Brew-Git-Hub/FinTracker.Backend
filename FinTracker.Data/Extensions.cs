@@ -62,6 +62,7 @@ public static class Extensions
         serviceCollection.AddScoped<IAnalyticsService, AnalyticsService>();
         serviceCollection.AddScoped<IValidationRuleService, ValidationRuleService>();
         serviceCollection.AddScoped<IValidationIssueService, ValidationIssueService>();
+        serviceCollection.AddScoped<IValidationService, ValidationService>();
 
         return serviceCollection;
     }
