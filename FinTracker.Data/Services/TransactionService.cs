@@ -27,6 +27,7 @@ public class TransactionService(ITransactionRepository transactionRepository) : 
             Comment = dto.Comment,
             Type = dto.Amount < 0 ? TransactionType.Expense : TransactionType.Income,
             IsDeleted = false,
+            HasPositions = false,
             CategoryId = dto.CategoryId,
             ScopeId = dto.ScopeId,
             TransactionTags = dto.TagIds.Select(tagId => new TransactionTag

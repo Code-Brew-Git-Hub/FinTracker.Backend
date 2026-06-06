@@ -36,8 +36,10 @@ public static class MappingConfig
             .Ignore(dest => dest.Category)
             .Ignore(dest => dest.Scope);
 
-        // TransactionItem
-        TypeAdapterConfig<Position, PositionDto>.NewConfig();
+        // Position
+        TypeAdapterConfig<Position, PositionDto>.NewConfig()
+            .Map(dest => dest.Tags,
+                src => src.PositionTags.Select(pt => pt.Tag).Adapt<List<TagDto>>());
 
         // TransactionLink — транзакции берём через Entries
         TypeAdapterConfig<TransactionLink, TransactionLinkDto>.NewConfig()

@@ -14,6 +14,7 @@ public class TransactionDto
     public string? Comment { get; set; }
     public string Type { get; set; }
     public bool IsDeleted { get; set; }
+    public bool HasPositions { get; set; }
 
     public CategoryDto Category { get; set; }
     public ScopeDto? Scope { get; set; }

@@ -38,6 +38,10 @@ public class Transaction
     /// Признак soft delete
     /// </summary>
     public bool IsDeleted { get; set; }
+    /// <summary>
+    /// Признак наличия у транзакции активных позиций
+    /// </summary>
+    public bool HasPositions { get; set; }
 
     // Foreign Keys
 
