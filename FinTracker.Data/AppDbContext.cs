@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FinTracker.Domain;
 using FinTracker.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinTracker.Data;
 
@@ -13,6 +14,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Position> TransactionItems { get; set; }
     public DbSet<TransactionLink> TransactionLinks { get; set; }
     public DbSet<TransactionLinkEntry> TransactionLinkEntries { get; set; }
+    public DbSet<ValidationRule> ValidationRules { get; set; }
+    public DbSet<ValidationIssue> ValidationIssues { get; set; }
+    public DbSet<ValidationIssueTransaction> ValidationIssueTransactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -132,6 +136,61 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasOne(tle => tle.Transaction)
             .WithMany(t => t.LinkEntries)
             .HasForeignKey(tle => tle.TransactionId)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
+
+        #region ValidationRule
+        modelBuilder.Entity<ValidationRule>()
+            .HasKey(r => r.Id);
+        modelBuilder.Entity<ValidationRule>()
+            .Property(r => r.Name)
+            .IsRequired()
+            .HasMaxLength(200);
+        modelBuilder.Entity<ValidationRule>()
+            .Property(r => r.IsEnabled)
+            .IsRequired();
+        modelBuilder.Entity<ValidationRule>()
+            .HasIndex(r => r.Name)
+            .IsUnique();
+        modelBuilder.Entity<ValidationRule>()
+            .HasData(new ValidationRule
+            {
+                Id = ValidationRuleIds.IdenticalTransactions,
+                Name = "Полностью идентичные транзакции",
+                Description = "Поиск транзакций с одинаковой датой, суммой, описанием и валютой",
+                IsEnabled = true
+            });
+        #endregion
+
+        #region ValidationIssue
+        modelBuilder.Entity<ValidationIssue>()
+            .HasKey(i => i.Id);
+        modelBuilder.Entity<ValidationIssue>()
+            .Property(i => i.Status)
+            .IsRequired()
+            .HasConversion<string>();
+        modelBuilder.Entity<ValidationIssue>()
+            .Property(i => i.CreatedAtUtc)
+            .IsRequired();
+        modelBuilder.Entity<ValidationIssue>()
+            .HasOne(i => i.Rule)
+            .WithMany(r => r.Issues)
+            .HasForeignKey(i => i.RuleId)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion
+
+        #region ValidationIssueTransaction
+        modelBuilder.Entity<ValidationIssueTransaction>()
+            .HasKey(it => new { it.ValidationIssueId, it.TransactionId });
+        modelBuilder.Entity<ValidationIssueTransaction>()
+            .HasOne(it => it.Issue)
+            .WithMany(i => i.Transactions)
+            .HasForeignKey(it => it.ValidationIssueId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<ValidationIssueTransaction>()
+            .HasOne(it => it.Transaction)
+            .WithMany()
+            .HasForeignKey(it => it.TransactionId)
             .OnDelete(DeleteBehavior.Restrict);
         #endregion
 

@@ -44,6 +44,8 @@ public static class Extensions
         serviceCollection.AddScoped<IPositionRepository, PositionRepository>();
         serviceCollection.AddScoped<ILinkRepository, LinkRepository>();
         serviceCollection.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
+        serviceCollection.AddScoped<IValidationRuleRepository, ValidationRuleRepository>();
+        serviceCollection.AddScoped<IValidationIssueRepository, ValidationIssueRepository>();
 
         return serviceCollection;
     }
@@ -58,6 +60,8 @@ public static class Extensions
         serviceCollection.AddScoped<IPositionService, PositionService>();
         serviceCollection.AddScoped<ILinkService, LinkService>();
         serviceCollection.AddScoped<IAnalyticsService, AnalyticsService>();
+        serviceCollection.AddScoped<IValidationRuleService, ValidationRuleService>();
+        serviceCollection.AddScoped<IValidationIssueService, ValidationIssueService>();
 
         return serviceCollection;
     }

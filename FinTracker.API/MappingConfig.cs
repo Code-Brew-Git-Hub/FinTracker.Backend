@@ -4,6 +4,7 @@ using FinTracker.Domain.Dtos.Tags;
 using FinTracker.Domain.Dtos.Positions;
 using FinTracker.Domain.Dtos.TransactionLinks;
 using FinTracker.Domain.Dtos.Transactions;
+using FinTracker.Domain.Dtos.Validation;
 using FinTracker.Domain.Models;
 using Mapster;
 
@@ -45,5 +46,13 @@ public static class MappingConfig
                  src => src.Type.ToString())
             .Map(dest => dest.Transactions,
                  src => src.Entries.Select(e => e.Transaction).Adapt<List<TransactionDto>>());
+
+        TypeAdapterConfig<ValidationRule, ValidationRuleDto>.NewConfig();
+
+        TypeAdapterConfig<ValidationIssue, ValidationIssueDto>.NewConfig()
+            .Map(dest => dest.RuleName, src => src.Rule.Name)
+            .Map(dest => dest.TransactionIds,
+                src => src.Transactions.Select(t => t.TransactionId).ToList())
+            .Map(dest => dest.Status, src => src.Status.ToString());
     }
 }
