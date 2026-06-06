@@ -12,6 +12,7 @@ namespace FinTracker.Data.Services;
 public class ImportService(TransactionParser parser,
     ITransactionRepository transactionRepository,
     ICategoryRepository categoryRepository,
+    IValidationService validationService,
     IMemoryCache memoryCache) : IImportService
 {
     private const int TransactionSaveBatchSize = 100;
@@ -21,7 +22,7 @@ public class ImportService(TransactionParser parser,
         .SetAbsoluteExpiration(TimeSpan.FromHours(1))  // Сохраняем в кэш на 1 час
         .SetPriority(CacheItemPriority.Normal);
 
-    public async Task<ImportResultDto> ImportAsync(StreamReader reader, string filename)
+    public async Task<ImportResultDto> ImportAsync(StreamReader reader, string filename, bool runValidation = false)
     {
         var parseResult = await parser.Parse(reader, filename);
 
@@ -92,6 +93,19 @@ public class ImportService(TransactionParser parser,
 
         await transactionRepository.SaveChangesAsync();
 
+        ImportValidationSummaryDto? validation = null;
+        if (runValidation)
+        {
+            var validationResult = await validationService.RunIdenticalTransactionsAsync();
+            validation = new ImportValidationSummaryDto
+            {
+                FoundGroups = validationResult.FoundGroups,
+                CreatedIssues = validationResult.CreatedIssues,
+                SkippedGroups = validationResult.SkippedGroups,
+                CreatedIssueIds = validationResult.CreatedIssueIds
+            };
+        }
+
         return new ImportResultDto
         {
             Total = importedCount + parseResult.Errors.Count,
@@ -112,7 +126,8 @@ public class ImportService(TransactionParser parser,
             } : null,
             IncomeCount = incomeCount,
             ExpenseCount = expenseCount,
-            Preview = savedTransactions
+            Preview = savedTransactions,
+            Validation = validation
         };
     }
 

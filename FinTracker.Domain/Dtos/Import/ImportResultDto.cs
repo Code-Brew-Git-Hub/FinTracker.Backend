@@ -12,4 +12,5 @@ public class ImportResultDto
     public int IncomeCount { get; set; }
     public int ExpenseCount { get; set; }
     public List<TransactionPreviewDto> Preview { get; set; } = [];
+    public ImportValidationSummaryDto? Validation { get; set; }
 }
