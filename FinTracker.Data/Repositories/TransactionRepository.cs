@@ -106,6 +106,13 @@ public class TransactionRepository(AppDbContext context) : ITransactionRepositor
             .ToListAsync();
     }
 
+    public async Task<List<Transaction>> GetActiveAsync()
+    {
+        return await context.Transactions
+            .Where(t => !t.IsDeleted)
+            .ToListAsync();
+    }
+
     public async Task<List<Transaction>> GetFilteredAsync(TransactionFilter filter, bool includeDeleted)
     {
         var query = context.Transactions
