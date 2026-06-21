@@ -113,7 +113,8 @@ public class ImportService(
                 Description = p.Description,
                 Type = p.Amount < 0 ? TransactionType.Expense : TransactionType.Income,
                 CategoryId = category.Id,
-                IsDeleted = false
+                IsDeleted = false,
+                HasPositions = false
             };
 
             await transactionRepository.AddAsync(newTransaction);

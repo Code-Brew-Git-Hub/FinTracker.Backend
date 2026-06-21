@@ -10,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Scope> Scopes { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<TransactionTag> TransactionTags { get; set; }
+    public DbSet<PositionTag> PositionTags { get; set; }
     public DbSet<Position> TransactionItems { get; set; }
     public DbSet<TransactionLink> TransactionLinks { get; set; }
     public DbSet<TransactionLinkEntry> TransactionLinkEntries { get; set; }
@@ -36,6 +37,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Transaction>()
             .Property(t => t.IsDeleted)
             .IsRequired();  // NOT NULL
+        modelBuilder.Entity<Transaction>()
+            .Property(t => t.HasPositions)
+            .IsRequired();
         modelBuilder.Entity<Transaction>()
             .Property(t => t.CategoryId)
             .IsRequired();  // NOT NULL
@@ -97,9 +101,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .HasPrecision(18, 4)
                 .IsRequired();
         modelBuilder.Entity<Position>()
+            .Property(ti => ti.Quantity)
+                .HasPrecision(18, 4);
+        modelBuilder.Entity<Position>()
+            .Property(ti => ti.UnitPrice)
+                .HasPrecision(18, 4);
+        modelBuilder.Entity<Position>()
             .Property(ti => ti.Name)
                 .IsRequired()
                 .HasMaxLength(200);
+        modelBuilder.Entity<Position>()
+            .Property(ti => ti.IsDeleted)
+                .IsRequired();
         modelBuilder.Entity<Position>()
             .HasOne(ti => ti.Transaction)
                 .WithMany(t => t.Positions)
@@ -110,6 +123,21 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .WithMany()
                 .HasForeignKey(ti => ti.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
+        #endregion
+
+        #region PositionTag
+        modelBuilder.Entity<PositionTag>()
+            .HasKey(pt => new { pt.PositionId, pt.TagId });
+        modelBuilder.Entity<PositionTag>()
+            .HasOne(pt => pt.Position)
+            .WithMany(p => p.PositionTags)
+            .HasForeignKey(pt => pt.PositionId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<PositionTag>()
+            .HasOne(pt => pt.Tag)
+            .WithMany()
+            .HasForeignKey(pt => pt.TagId)
+            .OnDelete(DeleteBehavior.Cascade);
         #endregion
 
         #region TransactionLinks
