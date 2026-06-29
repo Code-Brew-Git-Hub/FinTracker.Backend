@@ -5,6 +5,7 @@ using FinTracker.Data.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using FinTracker.Parser;
+using Mapster;
 
 namespace FinTracker.Data;
 
@@ -69,6 +70,14 @@ public static class Extensions
         serviceCollection.AddScoped<CsvParser>();
         serviceCollection.AddScoped<TransactionParser>();
 
+        return serviceCollection;
+    }
+
+    public static IServiceCollection AddMapper(this IServiceCollection serviceCollection)
+    {
+        MappingConfig.Configure();
+        serviceCollection.AddMapster();
+        
         return serviceCollection;
     }
 }
