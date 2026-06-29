@@ -6,7 +6,7 @@ using MapsterMapper;
 
 namespace FinTracker.Data.Services;
 
-public class PositionService(IPositionRepository itemRepository, 
+public class PositionService(IPositionRepository itemRepository,
     ITransactionRepository transactionRepository,
     IMapper mapper) : IPositionService
 {

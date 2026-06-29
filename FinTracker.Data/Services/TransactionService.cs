@@ -54,7 +54,7 @@ public class TransactionService(ITransactionRepository transactionRepository,
     public async Task<TransactionDto> GetByIdAsync(Guid id, bool includeDeleted)
     {
         var transaction = await transactionRepository.EnsureExistsAsync(id, includeDeleted);
-        
+
         return mapper.Map<TransactionDto>(transaction);
     }
 

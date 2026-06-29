@@ -7,7 +7,7 @@ using MapsterMapper;
 namespace FinTracker.Data.Services;
 
 public class LinkService(ILinkRepository linkRepository,
-    ITransactionRepository transactionRepository, 
+    ITransactionRepository transactionRepository,
     IMapper mapper) : ILinkService
 {
     public async Task<TransactionLinkDto> AddTransactionAsync(Guid linkId, Guid transactionId)

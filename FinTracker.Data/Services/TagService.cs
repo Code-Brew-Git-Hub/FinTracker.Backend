@@ -37,7 +37,7 @@ public class TagService(ITagRepository tagRepository,
     public async Task<List<TagDto>> GetAllAsync()
     {
         var tags = await tagRepository.GetAllAsync();
-        
+
         return mapper.Map<List<TagDto>>(tags);
     }
 }

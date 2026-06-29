@@ -52,7 +52,7 @@ public class ScopeService(IScopeRepository scopeRepository,
         var scope = await scopeRepository.EnsureExistsAsync(scopeId);
 
         var transactions = await transactionRepository.GetByScopeIdAsync(scopeId);
-        
+
         return mapper.Map<List<TransactionDto>>(transactions);
     }
 

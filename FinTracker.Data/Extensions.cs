@@ -77,7 +77,7 @@ public static class Extensions
     {
         MappingConfig.Configure();
         serviceCollection.AddMapster();
-        
+
         return serviceCollection;
     }
 }
