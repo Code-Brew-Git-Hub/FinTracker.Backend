@@ -23,7 +23,7 @@ public static class AppExtensions
             context.Response.StatusCode = statusCode;
             await context.Response.WriteAsJsonAsync(ApiResponse<object>.Fail(message));
         }));
-        
+
         return app;
     }
 
@@ -45,24 +45,24 @@ public static class AppExtensions
     public static WebApplicationBuilder ConfigureBuilder(this WebApplicationBuilder builder)
     {
         var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()!;
-        
+
         builder.Services.AddDevCors(allowedOrigins);  // Настройка сайтов, с которых могут обращаться к api
 
         builder.Services.AddRepositories();
         builder.Services.AddServices();
-        
+
         builder.Services.AddParser();
-        
+
         builder.Services.AddContext();
-        
+
         builder.Services.AddMemoryCache();
-        
+
         builder.Services.AddMapper();
-        
+
         builder.Services.AddControllers();
-        
+
         builder.Services.AddSwaggerGen();
-        
+
         return builder;
     }
 

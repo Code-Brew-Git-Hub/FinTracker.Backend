@@ -12,7 +12,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.ConfigureBuilder();
-        
+
         var app = builder.Build();
 
         // Применение миграций
@@ -24,7 +24,7 @@ public class Program
         }
 
         app.ConfigureApp();
-        
+
         app.Run();
     }
 }
